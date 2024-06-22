@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 /**
@@ -76,6 +75,15 @@ class App extends React.Component {
   handleSubmit = event => {
     event.preventDefault();
     console.log("Sending task description to Spring-Server: "+this.state.taskdescription);
+
+    /**
+     * Check if the taskdescription is empty and show an alert if it is.
+     */
+    if (this.state.taskdescription.trim() === "") {
+      alert("Die Eingabe darf nicht leer sein");
+      return;
+    }
+
     fetch("http://localhost:8080/tasks", {  // API endpoint (the complete URL!) to save a taskdescription
       method: "POST",
       headers: {
@@ -138,16 +146,24 @@ class App extends React.Component {
    * @param {*} todos : Task list
    * @returns html code snippet
    */
-  renderTasks(todos) {
+  renderTable(todos) {
     return (
-      <ul>
-        {todos.map((todo, index) => (
-          <li key={todo.taskdescription}>
-            {"Task " + (index+1) + ": "+ todo.taskdescription}
-            <button onClick={this.handleClick.bind(this, todo.taskdescription)}>Done</button>
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {todos.map((todo, index) => (
+            <tr key={todo.taskdescription}>
+              <td>{"#" + (index + 1) + ": " + todo.taskdescription}</td>
+              <td><button id="actionDone" onClick={ this.handleClick.bind(this, todo.taskdescription) }>Done</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
   }
 
@@ -158,7 +174,6 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h1>
             ToDo Liste
           </h1>
@@ -171,7 +186,7 @@ class App extends React.Component {
             <button type="submit">Absenden</button>
           </form>
           <div>
-            {this.renderTasks(this.state.todos)}
+            { this.renderTable(this.state.todos) }
           </div>
         </header>
       </div>
