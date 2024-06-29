@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,15 +31,20 @@ class DemoApplicationTests {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        // Fügen Sie einen Task zur lokalen Liste hinzu, um die Bedingung zu erfüllen
+        Task task = new Task();
+        task.setTaskdescription("Test Task");
+        List<Task> tasks = demoApplication.getTasks();
+        tasks.add(task);
     }
 
     @Test
     void testAddTask() {
         // Arrange
-        String taskDescription = "Test Task";
+        String taskDescription = "{\"taskdescription\":\"Test Task\"}";
 
         Task savedTask = new Task();
-        savedTask.setTaskdescription(taskDescription);
+        savedTask.setTaskdescription("Test Task");
 
         when(taskService.saveTask(any(Task.class))).thenReturn(savedTask);
 
@@ -45,25 +52,25 @@ class DemoApplicationTests {
         String result = demoApplication.addTask(taskDescription);
 
         // Assert
-        // TODO -> dem redirect welches erwartet wird, inkl validierung das Task auch erstellt würde
-        assertEquals("Task added successfully", result);
+        assertEquals("redirect:/", result);
         verify(taskService).saveTask(any(Task.class));
     }
 
     @Test
     void testDeleteTask() {
         // Arrange
-        String taskDescription = "Test Task";
+        String taskDescription = "{\"taskdescription\":\"Test Task\"}";
         Task task = new Task();
-        task.setTaskdescription(taskDescription);
+        task.setTaskdescription("Test Task");
 
-        when(taskRepository.findByName(taskDescription)).thenReturn(task);
+        when(taskService.findByDescription("Test Task")).thenReturn(task);
 
         // Act
         String result = demoApplication.delTask(taskDescription);
 
         // Assert
-        // TODO -> dem redirect welches erwartet wird, inkl validierung das Task auch erstellt würde
-        assertEquals("Task deleted successfully", result);
+        assertEquals("redirect:/", result);
+        verify(taskService).findByDescription("Test Task");
+        verify(taskService).deleteTaskByDescription("Test Task");
     }
 }
