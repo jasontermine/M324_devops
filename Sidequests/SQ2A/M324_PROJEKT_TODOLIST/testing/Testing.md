@@ -293,7 +293,7 @@ export const useTodoStore = defineStore("todoStore", {
     npm run test
     ```
 
-3. (Optional) Einzelnte Tests-Files ausführen:
+3. (Optional) Einzelne Test-Files ausführen:
     ```bash
     npm run test TodoStore.spec.ts
     ```
