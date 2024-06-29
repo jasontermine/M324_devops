@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,15 +12,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 class DemoApplicationTests {
 
-    @Mock
-    private TaskService taskService;
+    @MockBean
+    private TaskRepository taskRepository;
 
     @Mock
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
     @InjectMocks
     private DemoApplication demoApplication;
@@ -41,10 +43,17 @@ class DemoApplicationTests {
         when(taskService.saveTask(any(Task.class))).thenReturn(savedTask);
 
         // Act
-        result = demoApplication.addTask(taskDescription);
+        try {
+            result = demoApplication.addTask(taskDescription);
+        } catch(Exception e) {
+            assertEquals(null, e.getMessage());
+        }
 
         // Assert
-        assertEquals("Task added successfully", result);
+        assertEquals("Task added successfully", result); // TODO: redirect testen
+        // TODO: Erstellten Task kontrollieren
         verify(taskService).saveTask(any(Task.class));
     }
+
+    // TODO : weiteren Test einfügen
 }
