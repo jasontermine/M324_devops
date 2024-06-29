@@ -1,7 +1,6 @@
-name: todo
+version: '3.8'
 
 services:
-  
   mysql:
     image: mysql:latest
     container_name: todo_database
@@ -14,7 +13,7 @@ services:
       - MYSQL_DATABASE=todo
 
     ports:
-      -3306:3306
+      - "3306:3306"
 
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
