@@ -17,14 +17,4 @@ describe('Main component tests', () => {
     expect(wrapper.find("#submitBtn").text()).toStrictEqual('Absenden')
   });
 
-
-  /**
-   * Tests if the Main component does not contain the correct content 
-   */  
-  it("test fails if Element content does not match with actual text", () => {
-    const wrapper = mount(Main)
-    expect(wrapper.find("#title").text()).toStrictEqual("Todo Liste")
-    expect(wrapper.find("#submitBtn").text()).toStrictEqual('ABsenden')
-  });
-
 })
