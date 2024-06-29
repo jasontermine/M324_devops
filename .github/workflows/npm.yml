@@ -23,10 +23,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
           npm install
 
       - name: Run tests
         run: |
-          cd frontend
+          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
           npm run test
