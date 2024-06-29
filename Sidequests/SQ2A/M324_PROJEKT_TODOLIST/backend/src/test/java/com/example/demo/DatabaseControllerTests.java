@@ -21,7 +21,7 @@ class DatabaseControllerTests {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final String tableName = "todos";
+    private final String tableName = "todo";
 
     /**
      * Tests if the application can connect to the database.
@@ -62,27 +62,29 @@ class DatabaseControllerTests {
         }
     }
 
-    /**
-     * Tests creating a test entry in the database, querying it, and rolling back
-     * the transaction.
-     * This test ensures that a new entry can be inserted and retrieved correctly,
-     * and that the transaction is rolled back.
+        /**
+     * Tests creating a test entry in the database, querying it, and rolling back the transaction.
+     * This test ensures that a new entry can be inserted and retrieved correctly, and that the transaction is rolled back.
      */
     @Test
     @Transactional
     public void testCreateAndRollbackEntry() {
         assertThat(jdbcTemplate).isNotNull();
 
-        String insertSql = "INSERT INTO " + tableName + " (id, name) VALUES (?, ?)";
-        String querySql = "SELECT name FROM " + tableName + " WHERE id = ?";
-        String testName = "Test Name";
+        String insertSql = "INSERT INTO " + tableName + " (task, done) VALUES (?, ?)";
+        String querySql = "SELECT task FROM " + tableName + " WHERE id = ?";
+        String testTask = "Test Task";
+        boolean testDone = false;
 
         // Insert a test entry
-        jdbcTemplate.update(insertSql, 1, testName);
+        jdbcTemplate.update(insertSql, testTask, testDone);
+
+        // Get the last inserted ID
+        Integer lastInsertedId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
 
         // Query the test entry
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(querySql, 1);
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(querySql, lastInsertedId);
         assertThat(results).hasSize(1);
-        assertThat(results.get(0).get("name")).isEqualTo(testName);
+        assertThat(results.get(0).get("task")).isEqualTo(testTask);
     }
 }
