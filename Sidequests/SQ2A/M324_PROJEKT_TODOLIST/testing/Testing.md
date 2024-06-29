@@ -1,26 +1,20 @@
 # Unit Testing Documentation
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [Setup Instructions](#setup-instructions)
-   - [Frontend Unit Tests](#frontend-setup)
-   - [Java Unit Tests](#java-setup)
-3. [Test Organization](#test-organization)
-   - [Frontend Test Organization](#frontend-test-organization)
-   - [Java Test Organization](#java-test-organization)
-4. [Writing Tests](#writing-tests)
-   - [Writing Frontend Unit Tests](#writing-frontend-tests)
-   - [Writing Java Unit Tests](#writing-java-tests)
-5. [Running Tests](#running-tests)
-   - [Running Frontend Unit Tests](#running-frontend-tests)
-   - [Running Java Unit Tests](#running-java-tests)
-6. [Troubleshooting](#troubleshooting)
-   - [Frontend Unit Test Issues](#frontend-troubleshooting)
-   - [Java Unit Test Issues](#java-troubleshooting)
+## Inhaltsverzeichnis
+1. [Einleitung](#einleitung)
+2. [Setup Anweisungen](#setup-anweisungen)
+    1. [Node.js und npm installieren](#nodejs-und-npm-installieren)
+3. [Verzeichnis Aufbau für Tests](#verzeichnis-aufbau-für-tests)
+    1. [Frontend](#frontend)
+4. [Tests Schreiben und Ergebnisse](#tests-schreiben-und-ergebnisse)
+    1. [Main.spec.ts Test](#mainspects-test)
+    2. [TodoStore.spec.ts Test](#todostorespects-test)
+5. [Tests Ausführen](#tests-ausführen)
+    1. [Ausführen der Frontend Unit Tests](#ausführen-der-frontend-unit-tests)
 
 ---
 
-## Introduction
+## Einleitung
 
 Diese Dokumentation beschreibt die Einrichtung, Organisation und Ausführung von Unit-Tests für Frontend- und Backend.
 
@@ -38,7 +32,7 @@ Anschliessend in das Verzeichnis `M324_devops` wechseln:
 cd M324_devops
 ```
 
-### Frontend Unit Tests
+### Node.js und npm installieren
 
 1. **Node.js und npm installieren**
 
@@ -62,88 +56,98 @@ cd M324_devops
     ```
     *Windows* und *macOS*: 
     
-    Node.js von der [offiziellen Website](https://nodejs.org/en) herunterladen und installieren.
+    - Node.js von der [offiziellen Website](https://nodejs.org/en) herunterladen und installieren.
 
 2. **Abhängigkeiten für das FE installieren**
-    1. In das `frontend` Verzeichnis wechseln und anschliessend die Abhängigkeiten installieren.
+    
+    In das `frontend` Verzeichnis wechseln und anschliessend die Abhängigkeiten installieren.
     
         ```bash
         npm install
         ```
 
-3. **Tests ausführen**
-    1. Führen Sie die Tests mit dem folgenden Befehl aus:
-    
-        ```bash
-        npm run test
-        ```
+## Verzeichnis Aufbau für Tests
 
-## Test Aufbau
+### Frontend
 
-### Frontend Tests
+Die Main.vue Komponente wird getestet, um sicherzustellen, dass sie die richtigen Texte enthält. Der TodoStore wird ebenfalls getestet, um sicherzustellen, dass der Status standardmässig auf 0 gesetzt ist.
 
 - **Verzeichnis Aufbau:**
     ```
     src/
         components/
-            Main.spec.ts (Test für Main.vue)
-            TodoStore.spec.ts (Test für TodoStore.ts)
+            __tests__/
+                Main.spec.ts (Test für Main.vue)
+                TodoStore.spec.ts (Test für TodoStore.ts)
     ```
 
-## Test Ausführung und Ergebnisse
+## Tests Schreiben und Ergebnisse
 
-### Main.vue Test
+### Main.spec.ts Test
 
+ Test schlägt fehl, wenn der Test einen Inhalt von "ToDo Liste" und "Absenden" erwartet, jedoch im Code nicht implementiert ist:
+ 
+    
 ```ts
 import { describe, it, expect, beforeEach } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 import { mount } from '@vue/test-utils'
 import Main from '@/components/Main.vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 describe('Main component tests', () => {
-/**
- * Sets up the Pinia store because the TodoStore is used in the Main component
- */
-  beforeEach(() => {
-    setActivePinia(createPinia())
-  })
-  
-  /**
-   * Tests if the Main component renders / contains the correct text 
-   */
-  it('renders properly', () => {
-    const wrapper = mount(Main)
-    expect(wrapper.find("#title").text()).toStrictEqual("ToDo Liste")
-    expect(wrapper.find("#submitBtn").text()).toStrictEqual('Absenden')
-  });
-
-
-  /**
-   * Tests if the Main component does not contain the correct content 
-   */  
-  it("test fails if Element content does not match with actual text", () => {
-    const wrapper = mount(Main)
-    expect(wrapper.find("#title").text()).toStrictEqual("Todo Liste")
-    expect(wrapper.find("#submitBtn").text()).toStrictEqual('ABsenden')
-  });
+    /**
+     * Sets up the Pinia store because the Main component uses the TodoStore
+     */
+    beforeEach(() => {
+        setActivePinia(createPinia())
+    })
+    
+    /**
+    * Tests if the Main component contains the correct text 
+    */
+    it('renders properly', () => {
+        const wrapper = mount(Main)
+        expect(wrapper.find("#title").text()).toStrictEqual("ToDo Liste")
+        expect(wrapper.find("#submitBtn").text()).toStrictEqual('Absenden')
+    });
 
 })
 ```
+    
+![Test Fehlgeschlagen](./bilder/Failed_frontend_test.png)
+
+Test erfolgreich, da im Code die richtigen texte implementiert wurden:
+
+```html
+<template>
+    <div style="margin: auto; width: 50%;">
+        <div style="text-align: center;">
+        <h1 id="title">ToDo Liste</h1>
+
+        <form @submit.prevent="handleSubmit(todoDescription)">
+            <input v-model="todoDescription"/>
+            <button id="submitBtn" type="submit">Absenden</button>
+        </form>
+        </div>
+    </div>
+</template>
+
+```
+
+![Test Erfolgreich](./bilder/Passed_frontend_test.png)
 
 
 
-### TodoStore.ts Test
+### TodoStore.spec.ts Test
+
+
+Test schlägt fehl, da der Test einen Status Standardwert von 0 erwartet, jedoch im Code '1' implementiert ist:
 
 ```ts
-// stores/counter.spec.ts
 import { useTodoStore } from '@/stores/todoStore'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { createApp } from 'vue'
 
-/**
- * Sets up the Pinia store to allow Mocking of the TodoStore
- */
 beforeEach(() => {
     setActivePinia(createPinia());
 })
@@ -156,86 +160,145 @@ describe('TodoStore status', () => {
     expect(todoList.status).toBe(0)
   })
 
-  it('TodoState status default value is smaller than test value', () => {
-    const todoList = useTodoStore()
-
-    expect(todoList.status).toBeLessThan(1)
-  })
-
-  it('test fails if not equal to default status value', () => {
-    const todoList = useTodoStore()
-
-    expect(todoList.status).toEqual(1)
-  })
 })
-
-describe('TodoStore data', () => {
-
-    it('TodoState data is empty by default', () => {
-        const todoList = useTodoStore()
-
-        expect(todoList.data).toHaveLength(0)
-    })
-  
-    it('test fails if default State Data is not empty', () => {
-        const todoList = useTodoStore()
-
-        expect(todoList.data).toHaveLength(1)
-    })
-
-  })
 ```
 
+![Test Fehlgeschlagen](./bilder/Failed_TodoStore_frontend_test.png)
 
-### Writing Java Unit Tests
+Test erfolgreich, da im Code der Status auf 0 gesetzt wurde:
 
-- **Example Test (AppTest.java):**
-    ```java
-    import org.junit.Test;
-    import static org.junit.Assert.*;
+```ts
+import { base } from "@/domain/axios";
+import { defineStore } from "pinia";
+import type { AxiosResponse } from "axios";
 
-    public class AppTest {
-        @Test
-        public void testAppHasAGreeting() {
-            App class
-    ```
+export interface ITodo {
+  taskdescription: string;
+}
 
-## Running Tests
+interface ITodoResponse {
+  status: number;
+  data: Array<ITodo>;
+}
 
-### Running Frontend Unit Tests
+const todoState: ITodoResponse = {
+  // Code wurde angepasst für Unit Test
+  status: 0, 
+  data: [],
+};
 
-- **Run Tests Using npm Scripts:**
+type TodoState = typeof todoState;
+
+export const useTodoStore = defineStore("todoStore", {
+  state: (): TodoState => ({
+    ...todoState,
+  }),
+
+  getters: {
+    /**
+     * Get the list of todos
+     * @param {ITodo[]} state - The state of the store
+     * @returns - The list of todos
+     */
+    getTodoList(state): Array<ITodo> {
+      return state.data;
+    },
+  },
+
+  actions: {
+    /**
+     * Set the todo list
+     * @param {ITodoResponse} data - The response data from the API
+     */
+    setTodo(data: ITodoResponse): void {
+      this.status = data.status;
+      this.data = data.data;
+    },
+
+    /**
+     * Fetch the todo list from the API and set the response data (Todos) to the store
+     */
+    fetchTodoList(): void {
+      const response: Promise<AxiosResponse<ITodoResponse, any>> = base.get<ITodoResponse>("/");
+
+      response
+        .then((res: AxiosResponse<ITodoResponse, any>) => {
+          const data: ITodoResponse = {
+            status: res.status,
+            // @ts-expect-error
+            data: res.data,
+          };
+
+          this.setTodo(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+
+    /**
+     * Post a new todo to the API and fetch the updated todo list
+     * @param {string} text - The text of the todo
+     */
+    async postTodo(text: string): Promise<void> {
+      const payload = {
+        taskdescription: text.trim(),
+      };
+
+      await base
+        .post<ITodoResponse>("/tasks", payload)
+        .then((res: AxiosResponse<ITodoResponse, any>) => {
+          this.fetchTodoList();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+
+    /**
+     * Delete a todo from the API and fetch the updated todo list
+     * @param {string} taskdescription - The task description of the todo
+     */
+    async deleteTodo(taskdescription: string): Promise<void> {
+      const payload: ITodo = {
+        "taskdescription": taskdescription,
+      };
+
+      await base
+        .post(`/delete`, payload )
+        .then((res: AxiosResponse<any, any>) => {
+          this.fetchTodoList();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
+});
+```
+
+![Test Erfolgreich](./bilder/Passed_TodoStore_frontend_test.png)
+
+## Tests Ausführen
+
+### Ausführen der Frontend Unit Tests
+
+1. In das `frontend` Verzeichnis wechseln:
     ```bash
-    npm test
+    cd frontend
     ```
 
-### Running Java Unit Tests
-
-- **Run Tests Using Maven:**
+2. Frontend Unit Tests ausführen:
     ```bash
-    mvn test
+    npm run test
     ```
 
-## Troubleshooting
-
-### Frontend Unit Test Issues
-
-1. **Common Issues:**
-    - Test fails unexpectedly.
-    - Component not rendering as expected.
-
-2. **Debugging Tips:**
-    - Ensure all necessary dependencies are installed.
-    - Check for typos or incorrect imports.
-    - Use debugging tools like `console.log` to trace issues.
-
-### Java Unit Test Issues
-
-1. **Common Issues:**
-    - Test fails with an exception.
-    - Dependency injection issues.
-
-2. **Debugging Tips:**
-    - Check stack trace for specific errors.
-    - Ensure all dependencies are correctly configured.
-    - Use debugging tools in your IDE to step through the code.
+3. (Optional) Einzelnte Tests-Files ausführen:
+    ```bash
+    npm run test TodoStore.spec.ts
+    ```
+    oder
+    ```bash
+    npm run test Main.spec.ts
+    ```
+    
