@@ -35,7 +35,6 @@ class DemoApplicationTests {
     void testAddTask() {
         // Arrange
         String taskDescription = "Test Task";
-        String result = "";
 
         Task savedTask = new Task();
         savedTask.setTaskdescription(taskDescription);
@@ -43,17 +42,31 @@ class DemoApplicationTests {
         when(taskService.saveTask(any(Task.class))).thenReturn(savedTask);
 
         // Act
-        try {
-            result = demoApplication.addTask(taskDescription);
-        } catch(Exception e) {
-            assertEquals(null, e.getMessage());
-        }
+        String result = demoApplication.addTask(taskDescription);
 
         // Assert
-        assertEquals("Task added successfully", result); // TODO: redirect testen
-        // TODO: Erstellten Task kontrollieren
+        assertEquals("Task added successfully", result);
         verify(taskService).saveTask(any(Task.class));
     }
 
-    // TODO : weiteren Test einfügen
+    @Test
+    void testDeleteTask() {
+        // Arrange
+        String taskDescription = "Test Task";
+        Task task = new Task();
+        task.setTaskdescription(taskDescription);
+
+        when(taskRepository.findByName(taskDescription)).thenReturn(task);
+
+        // Act
+        String result = demoApplication.delTask(taskDescription);
+
+        // Assert
+        assertEquals("Task deleted successfully", result);
+    }
+
+    @Test
+    void contextLoads() {
+        assertTrue(true, "alles gut");
+    }
 }
