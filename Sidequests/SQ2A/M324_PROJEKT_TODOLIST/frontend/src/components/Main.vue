@@ -1,11 +1,11 @@
 <template>
   <div style="margin: auto; width: 50%;">
     <div style="text-align: center;">
-      <h1>ToDo Liste</h1>
+      <h1 id="title">ToDo Liste</h1>
 
       <form @submit.prevent="handleSubmit(todoDescription)">
         <input v-model="todoDescription"/>
-        <button type="submit">Absenden</button>
+        <button id="submitBtn" type="submit">Absenden</button>
       </form>
     </div>
   </div>
