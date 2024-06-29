@@ -1,8 +1,6 @@
-// stores/counter.spec.ts
 import { useTodoStore } from '@/stores/todoStore'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { createApp } from 'vue'
 
 beforeEach(() => {
     setActivePinia(createPinia());
@@ -22,11 +20,6 @@ describe('TodoStore status', () => {
     expect(todoList.status).toBeLessThan(1)
   })
 
-  it('test fails if not equal to default status value', () => {
-    const todoList = useTodoStore()
-
-    expect(todoList.status).toEqual(1)
-  })
 })
 
 describe('TodoStore data', () => {
@@ -35,12 +28,6 @@ describe('TodoStore data', () => {
         const todoList = useTodoStore()
 
         expect(todoList.data).toHaveLength(0)
-    })
-  
-    it('test fails if default State Data is not empty', () => {
-        const todoList = useTodoStore()
-
-        expect(todoList.data).toHaveLength(1)
     })
 
   })
