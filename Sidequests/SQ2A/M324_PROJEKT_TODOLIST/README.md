@@ -2,14 +2,15 @@
 
 ## TLDR 
 
-ToDo-Liste mit React (frontend) und Spring (backend). Weitere Details sind in den
+ToDo-Liste mit Vue 3 + Pinia (frontend) und Spring (backend). Weitere Details sind in den
 Kommentaren vor allem in App.js zu finden.
 
 ## Relevante Dateien in den Teil-Projekten (Verzeichnisse):
 
-1. diese Beschreibung
+1. Die Haupt Komponenten für das Vue 3 Frontend sind in *frontend/src* zu finden.
 2. frontend (Tools: npm und VSCode)
-	* App.js
+	* App.vue (Hauptkomponente)
+	* main.ts (Entrypoint der Applikation)
 
 3. backend (Eclipse oder VS-Code)
 	* DemoApplication.java
@@ -21,8 +22,8 @@ Kommentaren vor allem in App.js zu finden.
 1. forken oder clonen
 1. *backend* in Eclipse importieren und mit Maven starten, oder in VS-Code via Java Extension Pack. Ohne Persistenz - nach dem Serverneustart sind die Todos futsch. Läuft auf default port 8080.
 2. Im Terminal im *frontend* Verzeichnis
-	1. mit `npm install` benötige Module laden 
-	2. mit `npm start` den Frontend-Server starten
+	1. mit `npm install` benötige Abhängigkeiten laden 
+	2. mit `npm run dev` den Frontend-Server starten
 
 ## Benutzung 
 
