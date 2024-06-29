@@ -45,6 +45,7 @@ class DemoApplicationTests {
         String result = demoApplication.addTask(taskDescription);
 
         // Assert
+        // TODO -> dem redirect welches erwartet wird, inkl validierung das Task auch erstellt würde
         assertEquals("Task added successfully", result);
         verify(taskService).saveTask(any(Task.class));
     }
@@ -62,11 +63,7 @@ class DemoApplicationTests {
         String result = demoApplication.delTask(taskDescription);
 
         // Assert
+        // TODO -> dem redirect welches erwartet wird, inkl validierung das Task auch erstellt würde
         assertEquals("Task deleted successfully", result);
-    }
-
-    @Test
-    void contextLoads() {
-        assertTrue(true, "alles gut");
     }
 }
