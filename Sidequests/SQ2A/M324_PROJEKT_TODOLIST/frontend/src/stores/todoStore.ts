@@ -6,7 +6,7 @@ export interface ITodo {
   taskdescription: string;
 }
 
-interface ITodoResponse {
+export interface ITodoResponse {
   status: number;
   data: Array<ITodo>;
 }
