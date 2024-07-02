@@ -83,6 +83,9 @@ public class DemoApplication {
             String taskDescription = jsonNode.get("taskDescription").asText();
             Task newTask = new Task();
             newTask.setTaskDescription(taskDescription);
+            if(taskRepository.findByTaskDescription(taskDescription) != null) {
+                return "redirect:/"; // Task Duplicate found
+            }
             taskRepository.save(newTask);
             return "redirect:/";
         } catch (JsonProcessingException e) {
