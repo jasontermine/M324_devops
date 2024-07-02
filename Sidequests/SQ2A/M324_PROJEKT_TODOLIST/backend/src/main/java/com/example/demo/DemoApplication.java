@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +53,7 @@ public class DemoApplication {
      */
     @CrossOrigin
     @GetMapping("/")
-    public List<Task> getTasks() {
+    public ResponseEntity<List<Task>> getTasks() {
         List<Task> allTasks = new ArrayList<>();
         
         // Add all tasks from the database
@@ -67,7 +69,7 @@ public class DemoApplication {
             }
         }
 
-        return allTasks;
+        return ResponseEntity.status(HttpStatus.OK).body(allTasks);
     }
 
     /**
@@ -77,20 +79,21 @@ public class DemoApplication {
      */
     @CrossOrigin
     @PostMapping("/tasks")
-    public String addTask(@RequestBody String taskDescriptionJson) {
+    public ResponseEntity<String> addTask(@RequestBody String taskDescriptionJson) {
         try {
             JsonNode jsonNode = mapper.readTree(taskDescriptionJson);
             String taskDescription = jsonNode.get("taskDescription").asText();
             Task newTask = new Task();
             newTask.setTaskDescription(taskDescription);
             if(taskRepository.findByTaskDescription(taskDescription) != null) {
-                return "redirect:/"; // Task Duplicate found
+                // 409 Conflict senden, wenn die Aufgabe bereits existiert
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Task already exists");
             }
             taskRepository.save(newTask);
-            return "redirect:/";
+            return ResponseEntity.status(HttpStatus.CREATED).body("redirect:/");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return "error";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error");
         }
     }
 
@@ -101,20 +104,20 @@ public class DemoApplication {
      */
     @CrossOrigin
     @DeleteMapping("/tasks")
-    public String delTask(@RequestBody String taskDescriptionJson) {
+    public ResponseEntity<String> delTask(@RequestBody String taskDescriptionJson) {
         try {
             JsonNode jsonNode = mapper.readTree(taskDescriptionJson);
             String taskDescription = jsonNode.get("taskDescription").asText();
             Task taskToDelete = taskRepository.findByTaskDescription(taskDescription);
             if (taskToDelete != null) {
                 taskRepository.delete(taskToDelete);
-                return "redirect:/";
+                return ResponseEntity.status(HttpStatus.OK).body("redirect:/");
             } else {
-                return "error: task not found";
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return "error";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error");
         }
     }
 }
