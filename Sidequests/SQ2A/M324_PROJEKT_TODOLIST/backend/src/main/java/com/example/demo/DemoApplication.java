@@ -19,19 +19,36 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Hauptklasse der Anwendung.
+ */
 @RestController
 @SpringBootApplication
 public class DemoApplication {
 
+    /**
+     * Startet die Anwendung.
+     * @param args
+     */
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }
 
+    /**
+     * Das TaskRepository, das für den Zugriff auf die Datenbank verwendet wird.
+     */
     @Autowired
     private TaskRepository taskRepository;
 
+    /**
+     * Der ObjectMapper, der für die Konvertierung von JSON-Strings in Java-Objekte verwendet wird.
+     */
     private ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Gibt alle Aufgaben zurück.
+     * @return List<Task>
+     */
     @CrossOrigin
     @GetMapping("/")
     public List<Task> getTasks() {
@@ -53,6 +70,11 @@ public class DemoApplication {
         return allTasks;
     }
 
+    /**
+     * Fügt eine neue Aufgabe hinzu.
+     * @param taskDescriptionJson
+     * @return String
+     */
     @CrossOrigin
     @PostMapping("/tasks")
     public String addTask(@RequestBody String taskDescriptionJson) {
@@ -69,6 +91,11 @@ public class DemoApplication {
         }
     }
 
+    /**
+     * Löscht eine Aufgabe.
+     * @param taskDescriptionJson
+     * @return String
+     */
     @CrossOrigin
     @DeleteMapping("/tasks")
     public String delTask(@RequestBody String taskDescriptionJson) {
