@@ -18,6 +18,9 @@
     2. [Backend](#backend-1)
         1. [DemoApplicationTests](#demoapplicationtests)
         2. [Erklärung der Tests](#erklärung-der-tests)
+        3. [Konfiguration der In-Memory-Datenbank (H2)](#konfiguration-der-in-memory-datenbank-h2)
+            1. [application.properties](#applicationproperties)
+            2. [TestConfig.java](#testconfigjava)
         3. [Fehlgeschlagene und erfolgreiche Tests](#fehlgeschlagene-und-erfolgreiche-tests)
         4. [Angepasste Task Klasse](#angepasste-task-klasse)
         5. [Neue TaskRepository Klasse](#neue-taskrepository-klasse)
@@ -312,7 +315,7 @@ export const useTodoStore = defineStore("todoStore", {
 
 ### DemoApplicationTests
 
-Diese Testklasse überprüft die Funktionalität der Methoden `addTask` und `deleteTask` in der `DemoApplication`-Klasse.
+Diese Testklasse überprüft die Funktionalität der Methoden `addTask` und `deleteTask` in der `DemoApplication`-Klasse. Um die Interaktionen mit einer Datenbank zu vermeiden, wird eine In-Memory-Datenbank verwendet. Das `TaskRepository` wird durch ein Mock-Objekt ersetzt, um die Datenbankoperationen zu simulieren. Die Tests überprüfen, ob die Methoden korrekt funktionieren und die erwarteten Ergebnisse zurückgeben.
 
 ```java
 package com.example.demo;
@@ -332,6 +335,9 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.example.demo.Model.Task;
 import com.example.demo.Repository.TaskRepository;
@@ -339,92 +345,159 @@ import com.example.demo.Repository.TaskRepository;
 /**
  * Diese Klasse enthält Tests für die Methoden der DemoApplication-Klasse.
  */
-@SpringBootTest
+@SpringBootTest(classes = {DemoApplication.class, TestConfig.class})
+@ActiveProfiles("test")
 class DemoApplicationTests {
 
-    /**
-     * Mock des TaskRepository-Objekts, das von der DemoApplication-Klasse verwendet wird.
-     */
     @MockBean
     private TaskRepository taskRepository;
 
-    /**
-     * Das zu testende DemoApplication-Objekt.
-     */
     @InjectMocks
     private DemoApplication demoApplication;
 
-    /**
-     * Diese Methode wird vor jedem Test aufgerufen und initialisiert die Mock-Objekte.
-     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Fügen Sie einen Task zur lokalen Liste hinzu, um die Bedingung zu erfüllen
         Task task = new Task();
         task.setTaskDescription("Test Task");
         List<Task> tasks = new ArrayList<>();
         tasks.add(task);
         when(taskRepository.findAll()).thenReturn(tasks);
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> {
+            Task t = invocation.getArgument(0);
+            t.setTaskId(1); // Setze eine Mock-ID
+            return t;
+        });
+        when(taskRepository.findByTaskDescription(any(String.class))).thenAnswer(invocation -> {
+            String description = invocation.getArgument(0);
+            return tasks.stream().filter(t -> t.getTaskDescription().equals(description)).findFirst().orElse(null);
+        });
     }
 
-    /**
-     * Testet die getTasks-Methode der DemoApplication-Klasse.
-     */
     @Test
     void testAddTask() {
-      // Arrange
-      String taskDescription = "{\"taskDescription\":\"Test Task\"}";
+        String taskDescription = "{\"taskDescription\":\"New Task\"}";
+        Task savedTask = new Task();
+        savedTask.setTaskDescription("New Task");
 
-      Task savedTask = new Task();
-      savedTask.setTaskDescription("Test Task");
+        when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
+        when(taskRepository.findByTaskDescription("New Task")).thenReturn(null);
 
-      when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
+        ResponseEntity<String> result = demoApplication.addTask(taskDescription);
 
-      // Act
-      String result = demoApplication.addTask(taskDescription);
-
-      // Assert
-      assertEquals("redirect:/", result); // Überprüft, ob die Methode die erwartete Weiterleitung zurückgibt
-      verify(taskRepository).save(any(Task.class)); // Stellt sicher, dass die save-Methode des Repositories aufgerufen wird
-      assertNotNull(savedTask.getTaskId()); // Überprüft, ob die ID des gespeicherten Tasks nicht null ist
-      assertEquals("Test Task", savedTask.getTaskDescription()); // Überprüft, ob die Beschreibung des gespeicherten Tasks korrekt ist
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertEquals("redirect:/", result.getBody());
+        verify(taskRepository).save(any(Task.class));
+        assertNotNull(savedTask.getTaskId());
+        assertEquals("New Task", savedTask.getTaskDescription());
     }
 
-    /**
-     * Testet die getTasks-Methode der DemoApplication-Klasse.
-     */
+    @Test
+    void testAddTaskConflict() {
+        String taskDescription = "{\"taskDescription\":\"Test Task\"}";
+        
+        ResponseEntity<String> result = demoApplication.addTask(taskDescription);
+
+        assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+        assertEquals("Task already exists", result.getBody());
+        verify(taskRepository).findByTaskDescription("Test Task");
+    }
+
     @Test
     void testDeleteTask() {
-        // Arrange
         String taskDescription = "{\"taskDescription\":\"Test Task\"}";
         Task task = new Task();
         task.setTaskDescription("Test Task");
 
         when(taskRepository.findByTaskDescription("Test Task")).thenReturn(task);
 
-        // Act
-        String result = demoApplication.delTask(taskDescription);
+        ResponseEntity<String> result = demoApplication.delTask(taskDescription);
 
-        // Assert
-        assertEquals("redirect:/", result);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals("redirect:/", result.getBody());
         verify(taskRepository).findByTaskDescription("Test Task");
         verify(taskRepository).delete(task);
     }
-}
 
+    @Test
+    void testDeleteTaskNotFound() {
+        String taskDescription = "{\"taskDescription\":\"Nonexistent Task\"}";
+
+        when(taskRepository.findByTaskDescription("Nonexistent Task")).thenReturn(null);
+
+        ResponseEntity<String> result = demoApplication.delTask(taskDescription);
+
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals("Task not found", result.getBody());
+        verify(taskRepository).findByTaskDescription("Nonexistent Task");
+    }
+}
 ```
 
 ### Erklärung der Tests
 
 1. **Setup-Methode**:
-   - Die `setUp` Methode wird vor jedem Test ausgeführt und initialisiert die Mocks und die lokale Task-Liste. Ein Task mit dem Namen "Test Task" wird zur lokalen Liste hinzugefügt, um die Bedingung für den Test zu erfüllen. Die `taskRepository.findAll` Methode wird durch `when(taskRepository.findAll()).thenReturn(tasks)` ersetzt, um die Liste zurückzugeben. Dies stellt sicher, dass die `getAllTasks` Methode in der `DemoApplication` Klasse die Liste korrekt zurückgibt.
+   - Die `setUp` Methode wird vor jedem Test ausgeführt und initialisiert die Mock-Objekte. Ein neuer Task mit dem Namen "Test Task" wird erstellt und in einer Liste gespeichert. Die `taskRepository.findAll` Methode wird so konfiguriert, dass sie die Liste zurückgibt. Die `taskRepository.save` Methode wird so konfiguriert, dass sie den Task zurückgibt und eine Mock-ID setzt. Die `taskRepository.findByTaskDescription` Methode wird so konfiguriert, dass sie den Task anhand seiner Beschreibung zurückgibt.
 
-2. **Test für `addTask`**:
-   - Überprüft die Funktionalität der `addTask` Methode, indem sichergestellt wird, dass sie einen Task mit dem Namen "Test Task" erfolgreich hinzufügt und dabei die `taskRepository.save` Methode aufruft. Der Test gilt als bestanden, wenn der Task korrekt eingefügt und `taskRepository.save` ausgeführt wird. Eine Verbindung zur Datenbank ist für diesen Test nicht notwendig, da die `taskRepository.save` Methode durch ein Mock ersetzt wird. Mit `verify(taskRepository).save(any(Task.class))` wird überprüft, ob die Methode aufgerufen wurde. `assertNotNull(savedTask.getId())` überprüft, ob die ID des gespeicherten Tasks nicht null ist, und `assertEquals("Test Task", savedTask.getTaskDescription())` überprüft, ob die Beschreibung des Tasks korrekt ist.
+2. **Test für `addTask` Methode**:
+   - Der Test überprüft, ob die `addTask` Methode einen neuen Task hinzufügt und die erwarteten Ergebnisse zurückgibt. Ein neuer Task mit dem Namen "New Task" wird erstellt und die `taskRepository.save` Methode wird so konfiguriert, dass sie den Task zurückgibt. Die `taskRepository.findByTaskDescription` Methode wird so konfiguriert, dass sie `null` zurückgibt. Die Methode wird aufgerufen und die Ergebnisse werden überprüft.
 
-3. **Test für `deleteTask`**:
-   - Überprüft die Funktionalität der `deleteTask` Methode, indem sichergestellt wird, dass sie einen Task mit dem Namen "Test Task" erfolgreich löscht und dabei die `taskRepository.delete` Methode aufruft. Der Test gilt als bestanden, wenn der Task korrekt gelöscht und `taskRepository.delete` ausgeführt wird. Eine Verbindung zur Datenbank ist für diesen Test nicht notwendig, da die `taskRepository.delete` Methode durch ein Mock ersetzt wird. Mit `verify(taskRepository).delete(task)` wird überprüft, ob die Methode aufgerufen wurde.
+3. **Test für `addTask` Methode (Konflikt)**:
+    - Der Test überprüft, ob die `addTask` Methode einen Konflikt erkennt, wenn ein Task mit demselben Namen bereits existiert. Ein Task mit dem Namen "Test Task" wird erstellt und die `taskRepository.findByTaskDescription` Methode wird so konfiguriert, dass sie den Task zurückgibt. Die Methode wird aufgerufen und die Ergebnisse werden überprüft.
+
+4. **Test für `deleteTask` Methode**:
+    - Der Test überprüft, ob die `deleteTask` Methode einen Task löscht und die erwarteten Ergebnisse zurückgibt. Ein Task mit dem Namen "Test Task" wird erstellt und die `taskRepository.findByTaskDescription` Methode wird so konfiguriert, dass sie den Task zurückgibt. Die Methode wird aufgerufen und die Ergebnisse werden überprüft.
+
+5. **Test für `deleteTask` Methode (nicht gefunden)**:
+    - Der Test überprüft, ob die `deleteTask` Methode einen Fehler zurückgibt, wenn der Task nicht gefunden wird. Die `taskRepository.findByTaskDescription` Methode wird so konfiguriert, dass sie `null` zurückgibt. Die Methode wird aufgerufen und die Ergebnisse werden überprüft.
+
+## Konfiguration der In-Memory-Datenbank (H2)
+### application.properties
+In der `application.properties` Datei wird die Konfiguration für die H2-Datenbank festgelegt. Die Datenbank wird im Arbeitsspeicher erstellt und die Tabellen werden beim Schließen der Verbindung gelöscht. Die `spring.jpa.hibernate.ddl-auto` Eigenschaft wird auf `create-drop` gesetzt, um die Tabellen beim Start der Anwendung zu erstellen und beim Beenden zu löschen.
+
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=create-drop
+```	
+
+### TestConfig.java
+Die `TestConfig` Klasse wird verwendet, um eine H2-Datenbank im Arbeitsspeicher zu erstellen. Die Klasse wird mit der `@TestConfiguration` Annotation versehen, um sie als Konfiguration für die Tests zu kennzeichnen. Die `@Bean` Annotation wird verwendet, um eine `DataSource` zu erstellen und die Verbindungsinformationen für die H2-Datenbank festzulegen.
+```java
+package com.example.demo;
+
+import javax.sql.DataSource;
+
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+/**
+ * Konfiguration für die Tests.
+ */
+@TestConfiguration
+public class TestConfig {
+
+    /**
+     * Erstellt eine H2-Datenbank im Arbeitsspeicher.
+     * @return DataSource
+     */
+    @Bean
+    @Primary
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
+        return dataSource;
+    }
+}
+```
 
 ## Fehlgeschlagene und erfolgreiche Tests
 
@@ -563,7 +636,7 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
 ```
 
 ## Angepasste DemoApplication Klasse
-Für die erfolgreiche Ausführung der Tests musste die `DemoApplication` Klasse angepasst werden. Die Methoden `addTask` und `deleteTask` wurden so implementiert, dass sie die Datenbankoperationen korrekt ausführen. Ebenso wurde die `getAllTasks` Methode angepasst, um die Aufgaben aus der Datenbank zu laden. Die Rückageben der Methoden wurde übernommen um weiter Anpassungen im Frontend zu vermeiden. Erweitert wurden sie jedoch mit einer Rückgabe eines Error-Strings, falls die Methode fehlschlägt. Die Klasse ist im Ordner `src/main/java/com/example/demo` zu finden.
+Für die erfolgreiche Ausführung der Tests musste die `DemoApplication` Klasse angepasst werden. Die Methoden `addTask` und `delTask` wurden so geändert, dass sie die Datenbankoperationen korrekt ausführen. Die Methoden verwenden das `TaskRepository`, um die Aufgaben hinzuzufügen und zu löschen. Die Methoden geben `ResponseEntity`-Objekte zurück, um den Statuscode und die Nachricht anzuzeigen.
 
 ```java
 package com.example.demo;
@@ -574,6 +647,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -619,7 +694,7 @@ public class DemoApplication {
      */
     @CrossOrigin
     @GetMapping("/")
-    public List<Task> getTasks() {
+    public ResponseEntity<List<Task>> getTasks() {
         List<Task> allTasks = new ArrayList<>();
         
         // Add all tasks from the database
@@ -635,7 +710,7 @@ public class DemoApplication {
             }
         }
 
-        return allTasks;
+        return ResponseEntity.status(HttpStatus.OK).body(allTasks);
     }
 
     /**
@@ -645,20 +720,21 @@ public class DemoApplication {
      */
     @CrossOrigin
     @PostMapping("/tasks")
-    public String addTask(@RequestBody String taskDescriptionJson) {
+    public ResponseEntity<String> addTask(@RequestBody String taskDescriptionJson) {
         try {
             JsonNode jsonNode = mapper.readTree(taskDescriptionJson);
             String taskDescription = jsonNode.get("taskDescription").asText();
             Task newTask = new Task();
             newTask.setTaskDescription(taskDescription);
             if(taskRepository.findByTaskDescription(taskDescription) != null) {
-                return "redirect:/"; // Task Duplicate found
+                // 409 Conflict senden, wenn die Aufgabe bereits existiert
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Task already exists");
             }
             taskRepository.save(newTask);
-            return "redirect:/";
+            return ResponseEntity.status(HttpStatus.CREATED).body("redirect:/");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return "error";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error");
         }
     }
 
@@ -669,20 +745,20 @@ public class DemoApplication {
      */
     @CrossOrigin
     @DeleteMapping("/tasks")
-    public String delTask(@RequestBody String taskDescriptionJson) {
+    public ResponseEntity<String> delTask(@RequestBody String taskDescriptionJson) {
         try {
             JsonNode jsonNode = mapper.readTree(taskDescriptionJson);
             String taskDescription = jsonNode.get("taskDescription").asText();
             Task taskToDelete = taskRepository.findByTaskDescription(taskDescription);
             if (taskToDelete != null) {
                 taskRepository.delete(taskToDelete);
-                return "redirect:/";
+                return ResponseEntity.status(HttpStatus.OK).body("redirect:/");
             } else {
-                return "error: task not found";
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return "error";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error");
         }
     }
 }
