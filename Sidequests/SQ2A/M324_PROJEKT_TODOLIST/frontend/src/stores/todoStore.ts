@@ -3,7 +3,8 @@ import { defineStore } from "pinia";
 import type { AxiosResponse } from "axios";
 
 export interface ITodo {
-  taskdescription: string;
+  taskid?: number;
+  taskDescription: string;
 }
 
 export interface ITodoResponse {
@@ -71,7 +72,7 @@ export const useTodoStore = defineStore("todoStore", {
      */
     async postTodo(text: string): Promise<void> {
       const payload = {
-        taskdescription: text.trim(),
+        taskDescription: text.trim(),
       };
 
       await base
@@ -90,11 +91,11 @@ export const useTodoStore = defineStore("todoStore", {
      */
     async deleteTodo(taskdescription: string): Promise<void> {
       const payload: ITodo = {
-        "taskdescription": taskdescription,
+        "taskDescription": taskdescription,
       };
 
       await base
-        .post(`/delete`, payload )
+        .delete(`/tasks`, { data: payload })
         .then((res: AxiosResponse<any, any>) => {
           this.fetchTodoList();
         })

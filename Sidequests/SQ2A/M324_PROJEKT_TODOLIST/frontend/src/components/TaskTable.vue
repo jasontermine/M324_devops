@@ -8,13 +8,13 @@
         </tr>
       </thead>
       <tbody>
-          <tr v-for="(task, index) in todos" :key="task.taskdescription">
-            <td>{{ "#" + (index + 1) + ": " + task.taskdescription }}</td>
+          <tr v-for="(task, index) in todos" :key="task.taskDescription">
+            <td>{{ "#" + (index + 1) + ": " + task.taskDescription }}</td>
             <td>
               <button
                 id="deleteButton"
                 type="button"
-                @click="() => handleDelete(task.taskdescription)"
+                @click="() => handleDelete(task.taskDescription)"
               >
                 Done
               </button>
