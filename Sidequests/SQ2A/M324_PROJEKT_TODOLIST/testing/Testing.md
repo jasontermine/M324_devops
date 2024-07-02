@@ -81,7 +81,8 @@ cd M324_devops
 
 ### Frontend
 
-Die Main.vue Komponente wird getestet, um sicherzustellen, dass sie die richtigen Texte enthält. Der TodoStore wird ebenfalls getestet, um sicherzustellen, dass der Status standardmässig auf 0 gesetzt ist.
+Die Main.vue Komponente wird getestet, um sicherzustellen, dass sie die richtigen Texte enthält. 
+Der TodoStore wird ebenfalls getestet, um sicherzustellen, dass der Status standardmässig auf 0 gesetzt ist und die Todos korrekt gesetzt werden, wenn man die darin enthaltenen Funktionen aufruft.
 
 - **Verzeichnis Aufbau:**
     ```
