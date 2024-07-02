@@ -544,7 +544,13 @@ Um die Frontend-Tests auszuführen, verwenden Sie npm (mit der Vitest-Library). 
     ```
 
 3. (Optional) Einzelne Test-Files ausführen:
+
+   In das '\_\_tests__' Verzeichnis navigieren:
     ```bash
+    cd src/components/__tests__
+    ```
+    anschliessend:
+   ```bash
     npm run test TodoStore.spec.ts
     ```
     oder
