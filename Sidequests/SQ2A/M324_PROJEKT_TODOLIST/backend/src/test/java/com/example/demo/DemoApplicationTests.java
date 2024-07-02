@@ -15,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.example.demo.Model.Task;
 import com.example.demo.Repository.TaskRepository;
@@ -22,76 +25,90 @@ import com.example.demo.Repository.TaskRepository;
 /**
  * Diese Klasse enthält Tests für die Methoden der DemoApplication-Klasse.
  */
-@SpringBootTest
+@SpringBootTest(classes = {DemoApplication.class, TestConfig.class})
+@ActiveProfiles("test")
 class DemoApplicationTests {
 
-    /**
-     * Mock des TaskRepository-Objekts, das von der DemoApplication-Klasse verwendet wird.
-     */
     @MockBean
     private TaskRepository taskRepository;
 
-    /**
-     * Das zu testende DemoApplication-Objekt.
-     */
     @InjectMocks
     private DemoApplication demoApplication;
 
-    /**
-     * Diese Methode wird vor jedem Test aufgerufen und initialisiert die Mock-Objekte.
-     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Fügen Sie einen Task zur lokalen Liste hinzu, um die Bedingung zu erfüllen
         Task task = new Task();
         task.setTaskDescription("Test Task");
         List<Task> tasks = new ArrayList<>();
         tasks.add(task);
         when(taskRepository.findAll()).thenReturn(tasks);
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> {
+            Task t = invocation.getArgument(0);
+            t.setTaskId(1); // Setze eine Mock-ID
+            return t;
+        });
+        when(taskRepository.findByTaskDescription(any(String.class))).thenAnswer(invocation -> {
+            String description = invocation.getArgument(0);
+            return tasks.stream().filter(t -> t.getTaskDescription().equals(description)).findFirst().orElse(null);
+        });
     }
 
-    /**
-     * Testet die getTasks-Methode der DemoApplication-Klasse.
-     */
     @Test
     void testAddTask() {
-      // Arrange
-      String taskDescription = "{\"taskDescription\":\"Test Task\"}";
+        String taskDescription = "{\"taskDescription\":\"New Task\"}";
+        Task savedTask = new Task();
+        savedTask.setTaskDescription("New Task");
 
-      Task savedTask = new Task();
-      savedTask.setTaskDescription("Test Task");
+        when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
+        when(taskRepository.findByTaskDescription("New Task")).thenReturn(null);
 
-      when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
+        ResponseEntity<String> result = demoApplication.addTask(taskDescription);
 
-      // Act
-      String result = demoApplication.addTask(taskDescription);
-
-      // Assert
-      assertEquals("redirect:/", result); // Überprüft, ob die Methode die erwartete Weiterleitung zurückgibt
-      verify(taskRepository).save(any(Task.class)); // Stellt sicher, dass die save-Methode des Repositories aufgerufen wird
-      assertNotNull(savedTask.getTaskId()); // Überprüft, ob die ID des gespeicherten Tasks nicht null ist
-      assertEquals("Test Task", savedTask.getTaskDescription()); // Überprüft, ob die Beschreibung des gespeicherten Tasks korrekt ist
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertEquals("redirect:/", result.getBody());
+        verify(taskRepository).save(any(Task.class));
+        assertNotNull(savedTask.getTaskId());
+        assertEquals("New Task", savedTask.getTaskDescription());
     }
 
-    /**
-     * Testet die getTasks-Methode der DemoApplication-Klasse.
-     */
+    @Test
+    void testAddTaskConflict() {
+        String taskDescription = "{\"taskDescription\":\"Test Task\"}";
+        
+        ResponseEntity<String> result = demoApplication.addTask(taskDescription);
+
+        assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+        assertEquals("Task already exists", result.getBody());
+        verify(taskRepository).findByTaskDescription("Test Task");
+    }
+
     @Test
     void testDeleteTask() {
-        // Arrange
         String taskDescription = "{\"taskDescription\":\"Test Task\"}";
         Task task = new Task();
         task.setTaskDescription("Test Task");
 
         when(taskRepository.findByTaskDescription("Test Task")).thenReturn(task);
 
-        // Act
-        String result = demoApplication.delTask(taskDescription);
+        ResponseEntity<String> result = demoApplication.delTask(taskDescription);
 
-        // Assert
-        assertEquals("redirect:/", result);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals("redirect:/", result.getBody());
         verify(taskRepository).findByTaskDescription("Test Task");
         verify(taskRepository).delete(task);
+    }
+
+    @Test
+    void testDeleteTaskNotFound() {
+        String taskDescription = "{\"taskDescription\":\"Nonexistent Task\"}";
+
+        when(taskRepository.findByTaskDescription("Nonexistent Task")).thenReturn(null);
+
+        ResponseEntity<String> result = demoApplication.delTask(taskDescription);
+
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals("Task not found", result.getBody());
+        verify(taskRepository).findByTaskDescription("Nonexistent Task");
     }
 }
