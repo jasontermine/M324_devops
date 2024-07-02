@@ -73,9 +73,9 @@ cd M324_devops
     
     In das `frontend` Verzeichnis wechseln und anschliessend die Abhängigkeiten installieren.
     
-        ```bash
-        npm install
-        ```
+    ```bash
+    npm install
+    ```
 
 ## Verzeichnis Aufbau für Tests
 
