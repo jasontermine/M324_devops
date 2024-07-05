@@ -1,6 +1,7 @@
 import { base } from "@/domain/axios";
 import { defineStore } from "pinia";
 import type { AxiosResponse } from "axios";
+import Toast from "@/composables/Toast";
 
 export interface ITodo {
   taskid?: number;
@@ -81,6 +82,10 @@ export const useTodoStore = defineStore("todoStore", {
           this.fetchTodoList();
         })
         .catch((err) => {
+          if (err.response.status === 409) {
+            const toast = new Toast(`Fehler - ${err.response.status}`, "Todo existiert bereits");
+            toast.timedShow(3000);
+          }
           console.error(err);
         });
     },
