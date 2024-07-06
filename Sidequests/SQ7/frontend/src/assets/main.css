@@ -1,0 +1,27 @@
+@import "./base.css";
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  width: 20rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+#deleteButton {
+  margin: auto;
+  display: block;
+  width: auto;
+  color: white;
+  background-color: #3b71ca;
+  border-color: #3b71ca;
+  border-radius: 7px;
+}
