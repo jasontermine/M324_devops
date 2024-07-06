@@ -1,5 +1,19 @@
 # Branching-Strategien für ein Software-Projekt
 
+## Inhaltsverzeichnis
+- [Recherchierte Branching-Strategien](#recherchierte-branching-strategien)
+- [Vergleich der Branching-Strategien](#vergleich-der-branching-strategien)
+- [Auswahl einer Branching-Strategie](#auswahl-einer-branching-strategie)
+- [Analyse des bestehenden Projekts](#analyse-des-bestehenden-projekts)
+- [Umsetzung der GitHub Flow Strategie im bestehenden Projekt](#umsetzung-der-github-flow-strategie-im-bestehenden-projekt)
+- [Dokumentation der durchgeführten Arbeiten](#dokumentation-der-durchgeführten-arbeiten)
+  - [Initialisieren eines Feature Branches](#initialisieren-eines-feature-branches)
+  - [Anpassen der Worklfow-Regeln](#anpassen-der-worklfow-regeln)
+  - [Anpassen der CI/CD-Pipelines](#anpassen-der-cicd-pipelines)
+  - [Hinzufügen der Änderungen zum Staging](#hinzufügen-der-änderungen-zum-staging)
+  - [Erstellen eines Pull Requests](#erstellen-eines-pull-requests)
+- [Literatur](#literatur)
+
 ## Recherchierte Branching-Strategien
 - **Git Flow**
 - **GitHub Flow**
