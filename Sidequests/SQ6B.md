@@ -10,12 +10,12 @@ _Christoph Knuchel, Jason Termine_
 5. [Nutzen von Pull-Requests](#nutzen-von-pull-requests)
 6. [Fazit](#fazit)
 7. [Beispiel-Screenshots und kurze Zusammenfassung](#beispiel-screenshots-und-kurze-zusammenfassung)
-    6. [Merge Commit](#merge-commit)
-    7. [Squash and Merge](#squash-and-merge)
-    8. [Rebase and Merge](#rebase-and-merge)
+    - [Merge Commit](#merge-commit)
+    - [Squash and Merge](#squash-and-merge)
+    - [Rebase and Merge](#rebase-and-merge)
 
 ## Funktionsweise von Pull-Requests
-
+.
 Ein Pull-Request ist ein Verfahren, das es Entwicklern ermöglicht, Änderungen an einem Projekt vorzuschlagen und zur Überprüfung einzureichen. Pull-Requests sind ein wichtiger Bestandteil des kollaborativen Entwicklungsprozesses, vorallem in Open-Source Projekten. Code Änderungen können besprochen und überprüft werden bevor man sie in die Produktionsumgebung übernimmt.
 
 ## Schritte zur Durchführung eines Pull-Requests in GitHub
