@@ -1,0 +1,110 @@
+_Christoph Knuchel, Jason Termine_
+# Dokumentation zur Erstellung und Durchführung von Pull-Requests in GitHub
+
+## Funktionsweise von Pull-Requests
+
+Ein Pull-Request ist ein Verfahren, das es Entwicklern ermöglicht, Änderungen an einem Projekt vorzuschlagen und zur Überprüfung einzureichen. Pull-Requests sind ein wichtiger Bestandteil des kollaborativen Entwicklungsprozesses, vorallem in Open-Source Projekten. Code Änderungen können besprochen und überprüft werden bevor man sie in die Produktionsumgebung übernimmt.
+
+## Schritte zur Durchführung eines Pull-Requests in GitHub
+
+1. **Fork das Repository (falls notwendig)**
+    - Forken Sie das Repository, in dem Sie Änderungen vornehmen möchten. Dies erstellt eine Kopie des Repositorys in Ihrem GitHub-Account.
+
+2. **Clone das Repository**
+    - Klonen Sie das Repository auf Ihren lokalen Rechner:
+      ```bash
+      git clone https://github.com/jasontermine/M324_Devops
+      ```
+
+3. **Erstellen eines neuen Branches**
+    - Erstellen Sie einen neuen Branch für Ihre Änderungen:
+      ```bash
+      git checkout -b feature/branch-name
+      ```
+
+4. **Vornehmen von Änderungen**
+    - Implementieren Sie die gewünschten Änderungen im Code. Wenn Sie mit der implementierung fertig sind, können sie mit `git status` überprüfen, welche Dateien geändert wurden. Mit `git diff` können sie die genauen Änderungen in den Dateien sehen.
+
+5. **Commit der Änderungen**
+    - Fügen Sie die Änderungen zum 'Staging' Bereich hinzu und committen Sie diese:
+      ```bash
+      git add .
+      git commit -m "Kurze aber aussagekräftige Beschreibung der Änderungen"
+      ```
+      oder sie können einzelne Dateien hinzufügen und committen:
+      ```bash
+        git add FILE_NAME
+        git commit -m "Kurze aber aussagekräftige Beschreibung der Änderungen"
+      ```
+
+6. **Push des Branches zu GitHub**
+    - Anschliessend können Sie den Branch auf GitHub pushen:
+      ```bash
+      git push origin feature/branch-name
+      ```
+
+7. **Erstellen eines Pull-Requests**
+    - Gehen Sie zu Ihrem Repository auf GitHub.
+    - Navigieren Sie zur Seite "Pull requests".
+    - Klicken Sie auf "New pull request".
+    - Wählen Sie den Vergleichsbranch (feature/branch-name) und den Basisbranch (main).
+    - Geben Sie eine aussagekräftige Beschreibung Ihrer Änderungen ein und klicken Sie auf "Create pull request".
+
+## Änderungen am Projekt durchführen und via Pull-Request in den Main-Branch zurückführen
+
+1. **Änderungen von Kollegen überprüfen**
+    - Öffnen Sie den erstellten Pull-Request.
+    - Überprüfen Sie die vorgeschlagenen Änderungen.
+    - Diskutieren Sie eventuelle Änderungen oder Anmerkungen im PR-Kommentarbereich.
+
+2. **Merge des Pull-Requests**
+    - Nach Abschluss der Überprüfung können Sie den Pull-Request mergen. GitHub bietet verschiedene Merge-Strategien:
+      - **Merge Commit**: Erstellt einen neuen Merge-Commit in der Geschichte.
+      - **Squash and Merge**: Kombiniert alle Commits des PR in einen einzigen Commit.
+      - **Rebase and Merge**: Rebaset die Commits des PR auf den Basisbranch.
+    - Klicken Sie auf "Merge pull request" und wählen Sie die gewünschte Merge-Strategie.
+
+## Merge-Strategien ausprobieren und analysieren
+
+- **Merge Commit**: Behält die gesamte Commit-Historie bei, was nützlich für detaillierte Historien ist, aber die Git-Historie aufblähen kann.
+- **Squash and Merge**: Sauberer Verlauf mit einem einzigen Commit, aber individuelle Commits gehen verloren.
+- **Rebase and Merge**: Saubere Historie ohne Merge-Commits, kann jedoch komplex sein bei Konflikten.
+
+## Nutzen von Pull-Requests
+
+**Vorteile:**
+- **Code-Überprüfung**: PRs fördern die Code-Überprüfung / Code-Reviews, was zur Verbesserung der Code-Qualität beiträgt.
+- **Diskussion und Feedback**: Ermöglichen Diskussionen über den Code und Vorschläge für Verbesserungen. Zudem beugt es Fehler vor, bevor sie in die Produktion gelangen.
+- **Nachverfolgbarkeit**: Änderungen sind dokumentiert und nachvollziehbar.
+- **Kollaboration**: Fördert die Zusammenarbeit im Team.
+
+**Nachteile:**
+- **Zeitaufwand**: Code-Überprüfungen / Code-Reviews und Diskussionen können zeitaufwendig sein.
+- **Komplexität**: Bei vielen PRs können Konflikte und eine komplexe Git-Historie entstehen.
+
+## Fazit
+
+Pull-Requests sind ein mächtiges Werkzeug zur Verbesserung der Code-Qualität und fördern die Zusammenarbeit im Team. Sie erfordern jedoch einen gewissen organisatorischen und zeitlichen Aufwand. Die Wahl der Merge-Strategie sollte je nach Projektanforderungen und Teampräferenzen erfolgen.
+
+---
+
+## Beispiel-Screenshots und kurze Zusammenfassung
+
+1. **Repository forken**
+- Klicken Sie auf den Button "Fork" um das Repository zu forken. 
+![Fork Repository](./resources/fork.png)
+- Das Repository wird nun in Ihrem GitHub-Account geforkt.
+![Create Fork](./resources/create_fork.png)
+- Der Forked Repository ist nun in ihrem aktuellen GitHub-Account:
+![Forked Repository](./resources/fork_proof.png)
+2. **Neuen Branch erstellen**
+- Erstellen Sie einen neuen Branch für Ihre Änderungen:
+![Create Branch](./resources/branch_example.png)
+- Der neue Branch wurde erfolgreich erstellt:
+![Branch Created](./resources/branch_proof.png)
+3. **Änderungen vornehmen**
+- Implementieren Sie die gewünschten Änderungen im Code.
+4. **Pull-Request erstellen**
+5. **Pull-Request überprüfen und mergen**
+
+---
