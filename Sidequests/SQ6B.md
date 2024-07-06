@@ -104,7 +104,29 @@ Pull-Requests sind ein mächtiges Werkzeug zur Verbesserung der Code-Qualität u
 ![Branch Created](./resources/branch_proof.png)
 3. **Änderungen vornehmen**
 - Implementieren Sie die gewünschten Änderungen im Code.
+![Edit Code](./resources/edit_code.png)
+- Fügen Sie die Änderungen zum 'Staging' Bereich hinzu und committen Sie diese:
+![Commit Changes](./resources/commit_example.png)
+- Pushen des Commit in den feature-Branch (Im IDE den Branch auswählen oder in der Konsole mit `git switch feature_beispiel` oder `git checkout feature_beispiel`):
+![Push Changes](./resources/push_example.png)
 4. **Pull-Request erstellen**
+- Gehen Sie zu Ihrem Repository auf GitHub.
+- Nachdem sie in Ihrem feature-Branch die Änderungen committet und gepusht haben, können Sie auf `"Compare & pull request"` klicken.
+![Create Pull-Request](./resources/pr_example.png)
+- Wählen Sie den Vergleichsbranch (feature/feature_beispiel) und den Basisbranch (main).
+- Geben Sie eine aussagekräftige Beschreibung Ihrer Änderungen ein und klicken Sie auf `"Create pull request"`.
+![Create Pull-Request](./resources/pr_create.png)
+
 5. **Pull-Request überprüfen und mergen**
+_PS: Im Screenshot verwende / Logge ich mich in mein Persönliches Github, um den PR zu überprüfen und zu mergen._
+- Überprüfen Sie die vorgeschlagenen Änderungen.
+![Review Changes](./resources/review_changes.png)
+- Diskutieren Sie eventuelle Änderungen oder Anmerkungen im PR-Kommentarbereich.
+- Wenn Sie mit den Änderungen zufrieden sind, können Sie den Pull-Request mergen.
+- Klicken Sie auf `"Merge pull request"` und wählen Sie die gewünschte Merge-Strategie.
+![Merge Pull-Request](./resources/merge_pr.png)
+- Der Pull-Request wurde erfolgreich gemerged.
+![PR Merged](./resources/pr_merged.png)
+- Der Branch `feature-beispiel` kann nun gelöscht werden.
 
 ---
