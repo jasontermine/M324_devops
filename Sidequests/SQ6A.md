@@ -21,14 +21,12 @@
 **Begründung:**
 - **Einfachheit:** Die einfache Struktur erleichtert es, den Überblick zu behalten und vermeidet unnötigen Overhead.
 - **Continuous Deployment:** Die Strategie ermöglicht häufige Releases und ist ideal für Projekte, die kontinuierlich ausgeliefert werden.
-- **Teamgröße und -erfahrung:** Unser Team ist klein bis mittelgroß und die meisten Teammitglieder sind mit dieser Methode vertraut, was die Einarbeitungszeit verkürzt.
 
 ## Analyse des bestehenden Projekts
 
 **Anforderungen für die Anwendung der GitHub Flow Strategie:**
 - **Häufige kleine Releases:** Unser Projekt hat eine hohe Änderungsfrequenz, was gut zu GitHub Flow passt.
 - **Code-Review-Prozess:** Wir benötigen ein effizientes System für Code-Reviews und das Zusammenführen von Branches.
-- **Automatisierte Tests:** Um die Stabilität zu gewährleisten, müssen wir eine solide CI/CD-Pipeline implementieren.
 
 ## Umsetzung der GitHub Flow Strategie im bestehenden Projekt
 
@@ -48,7 +46,87 @@
    - Erfolgreiche PRs werden in den main Branch gemerged und sofort deployed.
 
 ## Dokumentation der durchgeführten Arbeiten
+### Initialisieren eines Feature Branches
+```bash
+# Erstellen eines neuen Branches
+git checkout -b feature/toast-messages
+```
+![Branch erstellen](resources/checkout_branch.png)
 
+### Anpassen der Worklfow-Regeln
+Um die Github Flow-Straegie umzusetzen, müssen wir die Workflow-Regeln anpassen.
+
+Durch das einhalten der Namenskonventionen für Branches, können wir sicherstellen, dass die Branches eindeutig und leicht identifizierbar sind. 
+
+Da für Features keine Builds erstellt werden müssen, können wir die CI/CD-Pipelines so konfigurieren, dass Tests für alle Branches ausgeführt werden, um sicherzustellen das keine Fehler in den Code gelangen. Falls eine Änderung in den main Branch gemerged wird, wird zusätzlich ein Build ausgelöst, um sicherzustellen, dass die Änderungen den Anforderungen entsprechen.
+
+### Anpassen der CI/CD-Pipelines
+#### maven.yml
+```yaml
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: 
+      - main
+      - feature/*
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Test
+      run: mvn -f Sidequests/SQ2A/M324_PROJEKT_TODOLIST/backend --batch-mode -Dmaven.test.failure.ignore=true test
+
+  build_main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Test
+      run: mvn -f Sidequests/SQ2A/M324_PROJEKT_TODOLIST/backend --batch-mode -Dmaven.test.failure.ignore=true test
+
+    - name: Build with Maven
+      run: mvn -B package --file Sidequests/SQ2A/M324_PROJEKT_TODOLIST/backend/pom.xml
+```
+
+Hier haben wir die CI/CD-Pipeline so angepasst, dass sie für alle Branches ausgeführt wird. Wenn ein Feature-Branch gemerged wird, wird ein Build ausgelöst, um sicherzustellen, dass die Änderungen den Anforderungen entsprechen. Durch das if-Statement wird sichergestellt, dass der Build nur für den main Branch ausgeführt wird.
+
+### Pushen des Feature Branches
+```bash
+# Pushen des Branches zum Remote-Repository
+git push origin feature/branching_workflows
+```
+![Branch pushen](resources/push_branch.png)
 
 ## Literatur
 - [Git Branching Strategies](https://www.atlassian.com/git/tutorials/comparing-workflows)
