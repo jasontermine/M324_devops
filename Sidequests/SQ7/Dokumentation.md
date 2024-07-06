@@ -301,7 +301,7 @@ Am einfachsten und zuverlässigsten ist die URL-Parameter Methode. Sie ist einfa
 3. In `Task.java` und `TaskRepository.java` die Annotation `@Hidden` um diese in der WEBview auszublenden
 
 ### Frontend
-1. In `axios.ts` die `baseURL` entsprechend mit der entsprechenden Version anpassen.
+1. In `./frontend/src/domain/axios.ts` die `baseURL` entsprechend mit der entsprechenden Version anpassen.
 
 ```javascript
   import axios from "axios";
