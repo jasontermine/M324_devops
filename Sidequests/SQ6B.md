@@ -15,7 +15,6 @@ _Christoph Knuchel, Jason Termine_
     - [Rebase and Merge](#rebase-and-merge)
 
 ## Funktionsweise von Pull-Requests
-.
 Ein Pull-Request ist ein Verfahren, das es Entwicklern ermöglicht, Änderungen an einem Projekt vorzuschlagen und zur Überprüfung einzureichen. Pull-Requests sind ein wichtiger Bestandteil des kollaborativen Entwicklungsprozesses, vorallem in Open-Source Projekten. Code Änderungen können besprochen und überprüft werden bevor man sie in die Produktionsumgebung übernimmt.
 
 ## Schritte zur Durchführung eines Pull-Requests in GitHub
