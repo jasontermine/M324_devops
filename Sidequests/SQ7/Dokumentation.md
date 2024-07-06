@@ -90,4 +90,3 @@ Da weil wir bereits Erfahrungen mit URL-Parametrierten APIs haben und die Custom
 
 ## Zusammenfassung und Schlussfolgerung
 Die Wahl der API-Versionierungsstrategie hängt von verschiedenen Faktoren ab, wie z.B. der Komplexität der API, den Anforderungen der Nutzer und der Entwickler, den vorhandenen Ressourcen und der Flexibilität der Implementierung. In den meisten Fällen ist die URL-Parameter Methode die einfachste und zuverlässigste Lösung. Die Custom Header Methode bietet jedoch eine gute Alternative, die die URL-Struktur nicht beeinflusst und mehr Flexibilität bietet. Die Implementierung ist zwar etwas komplexer, aber die Vorteile überwiegen die Nachteile. Ebenso möchten wir diese Methode verwenden, um etwas neues auszuprobieren und zu lernen.
-```
