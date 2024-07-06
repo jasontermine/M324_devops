@@ -218,20 +218,16 @@ Hier sind wir mit folgenden Schritten vorgegangen:
 4. **Pull Request erstellen:** Wir erstellen den Pull Request und fügen eine Beschreibung hinzu, um die Änderungen zu erläutern.
 ![Pull Request erstellen](resources/PR_Step5.png)
 
-5. ** Übersicht über den Pull Request:** Hier können wir den Status des Pull Requests überprüfen und ggf. weitere Änderungen vornehmen. Hier werden auch die Testergebnisse angezeigt.
-![Pull Request Übersicht](resources/PR_Step6.png)
+6. **Warten auf Review:** Ein Kollege überprüft die Änderungen und gibt das OK, um den Pull Request zu mergen.
 
-6. ** Warten auf Review:** Ein Kollege überprüft die Änderungen und gibt das OK, um den Pull Request zu mergen.
-![Pull Request Review](resources/PR_Step7.png)
+7. **Pull Request mergen:** Nachdem der Pull Request freigegeben wurde, können wir ihn in den main Branch mergen. Hierzu verwenden wir den Button "Merge pull request". Wir wählen die Option "Squash and merge", um die Änderungen in einem Commit zusammenzufassen.
+![Pull Request mergen](resources/PR_Step6.png)
 
-7. ** Pull Request mergen:** Nachdem der Pull Request freigegeben wurde, können wir ihn in den main Branch mergen. Hierzu verwenden wir den Button "Merge pull request". Wir wählen die Option "Squash and merge", um die Änderungen in einem Commit zusammenzufassen.
-![Pull Request mergen](resources/PR_Step8.png)
+8. **Zusammenfassung:** Nach dem Mergen des Pull Requests erhalten wir eine Zusammenfassung der Änderungen und können den Erfolg des Merges überprüfen.
+![Pull Request Zusammenfassung](resources/PR_Step7.png)
 
-8. ** Zusammenfassung:** Nach dem Mergen des Pull Requests erhalten wir eine Zusammenfassung der Änderungen und können den Erfolg des Merges überprüfen.
-![Pull Request Zusammenfassung](resources/PR_Step9.png)
-
-9. ** Löschen des Branches:** Nachdem der Pull Request gemerged wurde, können wir den Branch löschen, um die Übersichtlichkeit zu wahren.
-![Branch löschen](resources/PR_Step10.png)
+9. **Löschen des Branches:** Nachdem der Pull Request gemerged wurde, können wir den Branch löschen, um die Übersichtlichkeit zu wahren.
+![Branch löschen](resources/PR_Step8.png)
 
 ## Literatur
 - [Git Branching Strategies](https://www.atlassian.com/git/tutorials/comparing-workflows)
