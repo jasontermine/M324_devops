@@ -83,7 +83,7 @@ export const useTodoStore = defineStore("todoStore", {
         })
         .catch((err) => {
           if (err.response.status === 409) {
-            const toast = new Toast(`Fehler - ${err.response.status}`, "Todo existiert bereits");
+            const toast = new Toast(`Fehler`, "Todo existiert bereits");
             toast.timedShow(3000);
           }
           console.error(err);
