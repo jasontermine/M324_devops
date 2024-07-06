@@ -121,7 +121,8 @@ Pull-Requests sind ein mächtiges Werkzeug zur Verbesserung der Code-Qualität u
 - Fügen Sie die Änderungen zum 'Staging' Bereich hinzu und committen Sie diese:
 ![Commit Changes](./resources/commit_example.png)
 - Pushen des Commit in den feature-Branch (Im IDE den Branch auswählen oder in der Konsole mit `git switch feature_beispiel` oder `git checkout feature_beispiel`):
-![Push Changes](./resources/push_example.png)
+  
+    ![Push Changes](./resources/push_example.png)
 4. **Pull-Request erstellen**
 - Gehen Sie zu Ihrem Repository auf GitHub.
 - Nachdem sie in Ihrem feature-Branch die Änderungen committet und gepusht haben, können Sie auf `"Compare & pull request"` klicken.
