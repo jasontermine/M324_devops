@@ -147,7 +147,7 @@ Pull-Requests sind ein mächtiges Werkzeug zur Verbesserung der Code-Qualität u
     - Wählen Sie die Merge-Strategie `"Squash and Merge"` und klicken Sie auf `"Confirm squash and merge"`.
     ![Squash and Merge](./resources/PR_Step6.png)
     - Der Pull-Request wurde erfolgreich gemerged.
-    ![Squash and Merge](./resources/PR_Step6.png)
+    ![Squash and Merge](./resources/PR_Step8.png)
     - Im Vergleich zu Merge Commit wurde nur ein Commit hinzugefügt und die anderen Commits wurden in diesen einen Commit zusammengefasst.
     ![Squash and Merge](./resources/PR_Step9.png)
     #### Rebase and Merge
