@@ -68,7 +68,7 @@ git checkout -b feature/toast-messages
 ![Branch erstellen](resources/checkout_branch.png)
 
 ### Anpassen der Worklfow-Regeln
-Um die Github Flow-Straegie umzusetzen, müssen wir die Workflow-Regeln anpassen.
+Um die Github Flow-Strategie umzusetzen, müssen wir die Workflow-Regeln anpassen.
 
 Durch das einhalten der Namenskonventionen für Branches, können wir sicherstellen, dass die Branches eindeutig und leicht identifizierbar sind. 
 
