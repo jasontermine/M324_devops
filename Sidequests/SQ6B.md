@@ -1,6 +1,19 @@
 _Christoph Knuchel, Jason Termine_
 # Dokumentation zur Erstellung und Durchführung von Pull-Requests in GitHub
 
+### Inhaltsverzeichnis
+
+1. [Funktionsweise von Pull-Requests](#funktionsweise-von-pull-requests)
+2. [Schritte zur Durchführung eines Pull-Requests in GitHub](#schritte-zur-durchführung-eines-pull-requests-in-github)
+3. [Änderungen am Projekt durchführen und via Pull-Request in den Main-Branch zurückführen](#änderungen-am-projekt-durchführen-und-via-pull-request-in-den-main-branch-zurückführen)
+4. [Merge-Strategien ausprobieren und analysieren](#merge-strategien-ausprobieren-und-analysieren)
+5. [Nutzen von Pull-Requests](#nutzen-von-pull-requests)
+6. [Fazit](#fazit)
+7. [Beispiel-Screenshots und kurze Zusammenfassung](#beispiel-screenshots-und-kurze-zusammenfassung)
+    6. [Merge Commit](#merge-commit)
+    7. [Squash and Merge](#squash-and-merge)
+    8. [Rebase and Merge](#rebase-and-merge)
+
 ## Funktionsweise von Pull-Requests
 
 Ein Pull-Request ist ein Verfahren, das es Entwicklern ermöglicht, Änderungen an einem Projekt vorzuschlagen und zur Überprüfung einzureichen. Pull-Requests sind ein wichtiger Bestandteil des kollaborativen Entwicklungsprozesses, vorallem in Open-Source Projekten. Code Änderungen können besprochen und überprüft werden bevor man sie in die Produktionsumgebung übernimmt.
@@ -118,15 +131,33 @@ Pull-Requests sind ein mächtiges Werkzeug zur Verbesserung der Code-Qualität u
 ![Create Pull-Request](./resources/pr_create.png)
 
 5. **Pull-Request überprüfen und mergen**
-_PS: Im Screenshot verwende / Logge ich mich in mein Persönliches Github, um den PR zu überprüfen und zu mergen._
-- Überprüfen Sie die vorgeschlagenen Änderungen.
-![Review Changes](./resources/review_changes.png)
-- Diskutieren Sie eventuelle Änderungen oder Anmerkungen im PR-Kommentarbereich.
-- Wenn Sie mit den Änderungen zufrieden sind, können Sie den Pull-Request mergen.
-- Klicken Sie auf `"Merge pull request"` und wählen Sie die gewünschte Merge-Strategie.
-![Merge Pull-Request](./resources/merge_pr.png)
-- Der Pull-Request wurde erfolgreich gemerged.
-![PR Merged](./resources/pr_merged.png)
-- Der Branch `feature-beispiel` kann nun gelöscht werden.
+    #### Merge Commit
+      _PS: Im Screenshot verwende / Logge ich mich in mein Persönliches Github, um den PR zu überprüfen und zu mergen._
+    - Überprüfen Sie die vorgeschlagenen Änderungen.
+    ![Review Changes](./resources/review_changes.png)
+    - Diskutieren Sie eventuelle Änderungen oder Anmerkungen im PR-Kommentarbereich.
+    - Wenn Sie mit den Änderungen zufrieden sind, können Sie den Pull-Request mergen.
+    - Klicken Sie auf `"Merge pull request"` und wählen Sie die gewünschte Merge-Strategie.
+    ![Merge Pull-Request](./resources/merge_pr.png)
+    - Der Pull-Request wurde erfolgreich gemerged.
+    ![PR Merged](./resources/pr_merged.png)
+    - Der Branch `feature-beispiel` kann nun gelöscht werden.
+    #### Squash and Merge
+    - Folgen Sie den gleichen Schritten wie bei Merge Commit bis zum Punkt 4.
+    - Wählen Sie die Merge-Strategie `"Squash and Merge"` und klicken Sie auf `"Confirm squash and merge"`.
+    ![Squash and Merge](./resources/PR_Step6.png)
+    - Der Pull-Request wurde erfolgreich gemerged.
+    ![Squash and Merge](./resources/PR_Step6.png)
+    - Im Vergleich zu Merge Commit wurde nur ein Commit hinzugefügt und die anderen Commits wurden in diesen einen Commit zusammengefasst.
+    ![Squash and Merge](./resources/PR_Step9.png)
+    #### Rebase and Merge
+    - Folgen Sie die gleichen Schritte wie bei Merge Commit bis zum Punkt 4.
+    - Für diese Strategie wurden 3 weitere Commits hinzugefügt, um die Unterschiede zu zeigen.
+    ![Rebase and Merge](./resources/multiple_commits.png)
+    - Wählen Sie die Merge-Strategie `"Rebase and Merge"` und klicken Sie auf `"Confirm rebase and merge"`.
+    ![Rebase and Merge](./resources/rebase_merge.png)
+    - Der Pull-Request wurde erfolgreich gemerged.
+    ![Rebase and Merge](./resources/rebase_merged.png)
+    - Im Vergleich zu Merge Commit und Squash and Merge wurden keine Merge-Commits hinzugefügt und die Commits wurden auf den Basisbranch rebased.
+    ![Rebase and Merge](./resources/rebase_merge_proof.png)
 
----
