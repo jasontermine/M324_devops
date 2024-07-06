@@ -6,9 +6,10 @@
   - [Request Parameter (Header)](#request-parameter-header)
   - [Custom Header](#custom-header)
   - [Parameter Versionierung](#parameter-versionierung)
-
+- [Bewertung der verschiedenen Methoden](#bewertung-der-verschiedenen-methoden)
 
 ## Verschiedene Versionierungsstrategien
+
 ### URL-Parameter
 Die einfachste Variante der Versionierung ist die Verwendung von URL-Parametern. Hierbei wird die Version der API in der URL angegeben. Zum Beispiel: `https://api.example.com/v1/resource`.
 
@@ -61,3 +62,19 @@ Eine weitere Möglichkeit ist die Verwendung von Parametern in der URL. Hierbei 
 - Mögliche Konflikte mit anderen URL-Parametern
 - Erfordert zusätzliche Logik zur Versionierung in der Anwendung
 
+## Bewertung der verschiedenen Methoden
+
+| Methode                 | Zuverlässigkeit | Einfachheit              | Flexibilität                |
+|-------------------------|-----------------|--------------------------|-----------------------------|
+| **URL-Parameter**       | Hoch            | Sehr einfach             | Mittel                      |
+| - Vorteile              | - Klar und verständlich für Nutzer | - Einfach zu implementieren | -                          |
+| - Nachteile             | - Kann zu langen URLs führen       | - Erfordert Anpassungen an der Routing-Logik | - Kann die URL-Struktur unübersichtlich machen |
+| **Request Parameter (Header)** | Hoch   | Mittel                   | Hoch                        |
+| - Vorteile              | - Saubere URL-Struktur             | - Ermöglicht flexible Versionierung | - Keine Auswirkungen auf die URL-Struktur |
+| - Nachteile             | - Kann zu Problemen mit Caching und Proxies führen | - Komplexer zu implementieren | - Erfordert zusätzliche Konfiguration auf Client-Seite |
+| **Custom Header**       | Hoch            | Mittel                   | Hoch                        |
+| - Vorteile              | - Flexibel                         | - Keine Änderungen an der URL-Struktur notwendig | - Unterstützt mehrere Versionierungsstrategien parallel |
+| - Nachteile             | - Kann zu Problemen mit Caching und Proxies führen | - Komplexer zu implementieren | - Erfordert zusätzliche Konfiguration auf Client-Seite |
+| **Parameter Versionierung** | Hoch   | Einfach                  | Mittel                      |
+| - Vorteile              | - Einfach zu implementieren         | - Flexibel                    | - Keine Änderungen an der URL-Struktur notwendig |
+| - Nachteile             | - Kann zu Missverständnissen führen, wenn Parameter nicht korrekt angegeben werden | - Mögliche Konflikte mit anderen URL-Parametern | - Erfordert zusätzliche Logik zur Versionierung in der Anwendung |
