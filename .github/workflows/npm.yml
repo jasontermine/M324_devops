@@ -2,11 +2,10 @@ name: Run Vite Tests
 
 on:
   push:
-    branches: 
+    branches:
       - main
-      - feature/*
   pull_request:
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -31,31 +30,3 @@ jobs:
         run: |
           cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
           npm run test
-
-  build_main:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: |
-          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
-          npm install
-
-      - name: Run tests
-        run: |
-          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
-          npm run test
-
-      - name: Build
-        run: |
-          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
-          npm run build
