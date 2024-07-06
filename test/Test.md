@@ -11,3 +11,9 @@ Ich bin ein weiterer Test.
 from markdown2html import markdown2html
 ```
 
+# Testdatei 3
+Ich bin ein weiterer Test.
+
+```python
+markdown2html("test/Test.md")
+```
