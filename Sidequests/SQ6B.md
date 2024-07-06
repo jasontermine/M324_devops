@@ -91,7 +91,7 @@ Pull-Requests sind ein mächtiges Werkzeug zur Verbesserung der Code-Qualität u
 ## Beispiel-Screenshots und kurze Zusammenfassung
 
 1. **Repository forken**
-- Klicken Sie auf den Button "Fork" um das Repository zu forken. 
+- Klicken Sie in Ihrem gewünschten Repository auf `"Fork"` um das Repository zu forken.
 ![Fork Repository](./resources/fork.png)
 - Das Repository wird nun in Ihrem GitHub-Account geforkt.
 ![Create Fork](./resources/create_fork.png)
