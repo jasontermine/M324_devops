@@ -11,10 +11,10 @@ const mockData: ITodoResponse = {
   status: 201,
   data: [
     {
-      taskdescription: "Task 1",
+      taskDescription: "Task 1",
     },
     {
-      taskdescription: "Task 4",
+      taskDescription: "Task 4",
     },
   ],
 };
@@ -48,13 +48,13 @@ describe("TodoStore data", () => {
 
     // Assert data
     expect(todoStore.status).toEqual(201);
-    expect(todoStore.data[0].taskdescription).toStrictEqual("Task 1");
-    expect(todoStore.data[1].taskdescription).toStrictEqual("Task 4");
+    expect(todoStore.data[0].taskDescription).toStrictEqual("Task 1");
+    expect(todoStore.data[1].taskDescription).toStrictEqual("Task 4");
 
     // Assert that Todos are not anything else
     expect(todoStore.status).not.toEqual(200);
-    expect(todoStore.data[0].taskdescription).not.toStrictEqual("Task 2");
-    expect(todoStore.data[1].taskdescription).not.toStrictEqual("Task 5");
+    expect(todoStore.data[0].taskDescription).not.toStrictEqual("Task 2");
+    expect(todoStore.data[1].taskDescription).not.toStrictEqual("Task 5");
 
     // Assert that Todo length is 2
     expect(todoStore.data).toHaveLength(2);
@@ -74,12 +74,12 @@ describe("TodoStore data", () => {
     const todoList = todoStore.getTodoList;
 
     // Assert data
-    expect(todoList[0].taskdescription).toStrictEqual("Task 1");
-    expect(todoList[1].taskdescription).toStrictEqual("Task 4");
+    expect(todoList[0].taskDescription).toStrictEqual("Task 1");
+    expect(todoList[1].taskDescription).toStrictEqual("Task 4");
 
     // Assert that Todos are not anything else
-    expect(todoList[0].taskdescription).not.toStrictEqual("Task 2");
-    expect(todoList[1].taskdescription).not.toStrictEqual("Task 5");
+    expect(todoList[0].taskDescription).not.toStrictEqual("Task 2");
+    expect(todoList[1].taskDescription).not.toStrictEqual("Task 5");
 
     // Assert that Todo length is 2
     expect(todoList).toHaveLength(2);
