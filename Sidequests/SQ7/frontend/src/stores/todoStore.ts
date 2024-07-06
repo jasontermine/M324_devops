@@ -49,7 +49,7 @@ export const useTodoStore = defineStore("todoStore", {
      * Fetch the todo list from the API and set the response data (Todos) to the store
      */
     fetchTodoList(): void {
-      const response: Promise<AxiosResponse<ITodoResponse, any>> = base.get<ITodoResponse>("/");
+      const response: Promise<AxiosResponse<ITodoResponse, any>> = base.get<ITodoResponse>("");
 
       response
         .then((res: AxiosResponse<ITodoResponse, any>) => {
