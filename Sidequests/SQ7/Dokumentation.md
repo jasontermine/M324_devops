@@ -1,10 +1,11 @@
 # API-Versionierung
 
 ## Inhaltsverzeichnis
-- [Verschiedne Versionierungsstrategien](#verschiedene-versionierungsstrategien)
+- [Verschiedene Versionierungsstrategien](#verschiedene-versionierungsstrategien)
   - [URL-Parameter](#url-parameter)
   - [Request Parameter (Header)](#request-parameter-header)
   - [Custom Header](#custom-header)
+  - [Parameter Versionierung](#parameter-versionierung)
 
 
 ## Verschiedene Versionierungsstrategien
@@ -46,3 +47,17 @@ Eine weitere Möglichkeit ist die Verwendung eines benutzerdefinierten Headers. 
 - Komplexer zu implementieren
 - Erfordert zusätzliche Konfiguration auf Client-Seite
 - Kann zu Problemen mit Caching und Proxies führen
+
+### Parameter Versionierung
+Eine weitere Möglichkeit ist die Verwendung von Parametern in der URL. Hierbei wird die Version der API in der URL angegeben. Zum Beispiel: `https://api.example.com/resource?version=1`.
+
+#### Vorteile:
+- Einfach zu implementieren
+- Flexibel
+- Keine Änderungen an der URL-Struktur notwendig
+
+#### Nachteile:
+- Kann zu Missverständnissen führen, wenn Parameter nicht korrekt angegeben werden
+- Mögliche Konflikte mit anderen URL-Parametern
+- Erfordert zusätzliche Logik zur Versionierung in der Anwendung
+
