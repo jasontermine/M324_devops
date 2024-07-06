@@ -121,12 +121,85 @@ jobs:
 
 Hier haben wir die CI/CD-Pipeline so angepasst, dass sie für alle Branches ausgeführt wird. Wenn ein Feature-Branch gemerged wird, wird ein Build ausgelöst, um sicherzustellen, dass die Änderungen den Anforderungen entsprechen. Durch das if-Statement wird sichergestellt, dass der Build nur für den main Branch ausgeführt wird.
 
-### Pushen des Feature Branches
+#### npm.yml
+```yaml
+name: Run Vite Tests
+
+on:
+  push:
+    branches: 
+      - main
+      - feature/*
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
+          npm install
+
+      - name: Run tests
+        run: |
+          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
+          npm run test
+
+  build_main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
+          npm install
+
+      - name: Run tests
+        run: |
+          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
+          npm run test
+
+      - name: Build
+        run: |
+          cd Sidequests/SQ2A/M324_PROJEKT_TODOLIST/frontend
+          npm run build
+
+```
+
+### Hinzufügen der Änderungen zum Staging
 ```bash
-# Pushen des Branches zum Remote-Repository
+# Hinzufügen der Änderungen zum Staging
+git add .
+
+# Commiten der Änderungen
+git commit -m "Update CI/CD pipelines for GitHub Flow"
+
+# Pushen der Änderungen zum Remote-Repository
 git push origin feature/branching_workflows
 ```
-![Branch pushen](resources/push_branch.png)
+
+![CI/CD-Pipelines anpassen](resources/update_pipelines.png)
 
 ## Literatur
 - [Git Branching Strategies](https://www.atlassian.com/git/tutorials/comparing-workflows)
