@@ -707,7 +707,7 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
 ```
 
 #### Hinweise zur Implementierung
-Um die Version der Endpunkt im Controller nicht widerholt zu schreiben, haben wir versucht die Annotation `@RequestMapping` mit einem vordefinierten Endpoint zu versehen. Dies wollten wir diese in den Controller als `@RequestMapping("/v1")` und `@RequestMapping("/v2")` setzen. Leider hat dies nicht funktioniert, da Spring Boot, diese für das Mapping ignorierte und somit Duplikate erstellt worden sind. Somit mussten wir die Version in jeder Methode des Controllers angeben.
+Um die Version der Endpunkt im Controller nicht widerholt zu schreiben, haben wir versucht die Annotation `@RequestMapping` mit einem vordefinierten Endpoint zu versehen. Dies wollten wir in den Controller als `@RequestMapping("/v1")` und `@RequestMapping("/v2")` setzen. Leider hat dies nicht funktioniert, da Spring Boot, diese für das Mapping ignorierte und somit Duplikate erstellt worden sind. Somit mussten wir die Version in jeder Methode des Controllers angeben.
 
 ### Frontend
 1. In `./frontend/src/domain/axios.ts` die `baseURL` mit der entsprechenden Version anpassen.
