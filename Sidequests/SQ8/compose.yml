@@ -1,9 +1,9 @@
 version: '3.3'
 
 services:
-
   database:
     build: ./database
+    image: todo-database
     ports:
       - "3306:3306"
     restart: always
@@ -15,15 +15,16 @@ services:
     volumes:
       - database:/var/lib/mysql
 
-
   frontend:
     build: ./frontend
+    image: todo-frontend
     ports:
       - "80:80"
     restart: always
 
   backend:
     build: ./backend
+    image: todo-backend
     ports:
       - "8080:8080"
     restart: always
