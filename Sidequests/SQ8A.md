@@ -91,7 +91,11 @@ In diesem Dockerfile werden zwei Stages verwendet:
 2. **Produktions-Stage**: 
     - Verwendet das OpenJDK-Image, um das endgültige Produktions-Image zu erstellen. Kopiert das JAR-Archiv aus der Build-Stage in das Produktions-Image und definiert den Befehl zum Ausführen des JAR-Archivs.
 
-## Docker Compose
+# Dockerfile für MYSQL
+
+## Docker Compose 1
+
+## Docker Compose 2
 
 ## GitHub Actions Workflow
 
