@@ -15,18 +15,31 @@ services:
       - MYSQL_DATABASE=todo
     volumes:
       - database:/var/lib/mysql
+    networks:
+      - app
 
   frontend:
     build: ./frontend
     ports:
       - "80:80"
     restart: always
+    networks:
+      - app
+      - web
 
   backend:
     build: ./backend
     ports:
       - "8080:8080"
     restart: always
+    networks:
+      - app
 
 volumes:
   database:
+
+networks:
+  app:
+    internal: true
+  web:
+    driver: bridge
