@@ -9,10 +9,10 @@
 		<version>3.2.2</version>
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>todo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>todo</name>
+	<description>Todo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
