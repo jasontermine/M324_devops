@@ -7,11 +7,6 @@ services:
     ports:
       - "3306:3306"
     restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=admin
-      - MYSQL_USER=tester
-      - MYSQL_PASSWORD=testing
-      - MYSQL_DATABASE=todo
     volumes:
       - database:/var/lib/mysql
 
