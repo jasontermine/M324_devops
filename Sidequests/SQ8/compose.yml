@@ -16,7 +16,8 @@ services:
     volumes:
       - database:/var/lib/mysql
     networks:
-      - app
+      - server
+
 
   frontend:
     build: ./frontend
@@ -24,8 +25,8 @@ services:
       - "80:80"
     restart: always
     networks:
-      - app
       - web
+      - server
 
   backend:
     build: ./backend
@@ -33,13 +34,14 @@ services:
       - "8080:8080"
     restart: always
     networks:
-      - app
+      - server
+      - web
 
 volumes:
   database:
 
 networks:
-  app:
-    internal: true
   web:
     driver: bridge
+  server:
+    internal: true
