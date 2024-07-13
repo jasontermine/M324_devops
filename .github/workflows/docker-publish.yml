@@ -39,5 +39,5 @@ jobs:
 
       - name: Push Docker Compose
         run: |
-          docker-compose -f ./Sidequests/SQ8/docker-compose.yml config
-          docker-compose -f ./Sidequests/SQ8/docker-compose.yml push
+          docker-compose -f ./Sidequests/SQ8/compose.yml config
+          docker-compose -f ./Sidequests/SQ8/compose.yml push
