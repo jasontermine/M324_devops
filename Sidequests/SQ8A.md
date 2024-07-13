@@ -91,13 +91,178 @@ In diesem Dockerfile werden zwei Stages verwendet:
 2. **Produktions-Stage**: 
     - Verwendet das OpenJDK-Image, um das endgültige Produktions-Image zu erstellen. Kopiert das JAR-Archiv aus der Build-Stage in das Produktions-Image und definiert den Befehl zum Ausführen des JAR-Archivs.
 
-# Dockerfile für MYSQL
+## Dockerfile für MYSQL
 
-## Docker Compose 1
+- In diesem Dockerfile wird ein MySQL-Image erstellt, das eine Datenbank und Benutzer mit den angegebenen Umgebungsvariablen initialisiert. 
 
-## Docker Compose 2
+```Dockerfile
+FROM mysql:latest
+
+ENV MYSQL_ROOT_PASSWORD=admin
+ENV MYSQL_USER=tester
+ENV MYSQL_PASSWORD=testing
+ENV MYSQL_DATABASE=todo
+
+COPY ./init.sql /docker-entrypoint-initdb.d/
+```
+
+- In diesem `init.sql` Skript wird die Datenbank, die Tabelle und der Benutzer initialisiert.
+
+```sql
+USE todo;
+
+CREATE TABLE IF NOT EXISTS todo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    task VARCHAR(255) NOT NULL,
+    done BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+GRANT ALL PRIVILEGES ON todo.* TO 'tester'@'%';
+FLUSH PRIVILEGES;
+```
+
+- `ENV`: Definiert die Umgebungsvariablen für den MySQL-Container.
+- `COPY ./init.sql /docker-entrypoint-initdb.d/`: Kopiert die `init.sql` Datei in das Verzeichnis `/docker-entrypoint-initdb.d/`, damit sie beim Starten des Containers ausgeführt wird.
+- `init.sql`: Initialisiert die Datenbank, den Benutzer und das Passwort.
+
+## Docker Compose für das Build des Frontend, Backends und der Datenbank
+- In diesem `compose.yml` File werden die Services für das Frontend, Backend und die Datenbank definiert.
+
+```yml
+version: '3.8'
+
+services:
+  database:
+    build: ./database
+    image: todo-database
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - database:/var/lib/mysql
+
+  frontend:
+    build: ./frontend
+    image: todo-frontend
+    ports:
+      - "80:80"
+    restart: always
+
+  backend:
+    build: ./backend
+    image: todo-backend
+    ports:
+      - "8080:8080"
+    restart: always
+
+volumes:
+  database:
+```
+
+- `services`: Definiert die Services für die Datenbank, das Frontend und das Backend.
+- `build`: Gibt den Pfad zum Dockerfile an.
+- `image`: Gibt den Namen des Images an.
+- `ports`: Definiert die Ports, die für die Services freigegeben werden.
+- `restart`: Definiert das Neustartverhalten der Services.
+- `volumes`: Definiert die Volumes für die Datenbank.
+
+## Docker Compose welches die Images eigenen Images auf Docker Hub pullt
+
+- In diesem `compose.yml` File werden die Services für das Frontend, Backend und die Datenbank definiert, die die eigenen Images von Docker Hub verwenden.
+
+```yml
+name: todoapplication
+
+services:
+  backend:
+    image: christophknuchelwiss/todo-backend:latest
+    ports:
+      - "8080:8080"
+    restart: always
+
+  frontend:
+    image: christophknuchelwiss/todo-frontend:latest
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - backend
+
+  database:
+    image: christophknuchelwiss/todo-database:latest
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - database:/var/lib/mysql
+
+volumes:
+  database:
+```
+
+- `image`: Gibt den Namen des Images auf Docker Hub an.
+- `depends_on`: Definiert die Abhängigkeiten zwischen den Services.
+-  `volumes`: Definiert die Volumes für die Datenbank.
 
 ## GitHub Actions Workflow
+
+- In diesem GitHub Actions Workflow wird der Build- und Push-Prozess für die Docker-Images automatisiert.
+
+```yml
+name: Publish Docker image to Docker Hub
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Tag Images with Compose
+        run: |
+          cd Sidequests/SQ8
+          docker-compose build
+          docker tag todo-backend ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:latest
+          docker tag todo-frontend ${{ secrets.DOCKERHUB_USERNAME }}/todo-frontend:latest
+          docker tag todo-database ${{ secrets.DOCKERHUB_USERNAME }}/todo-database:latest
+
+      - name: Push Backend Image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:latest
+
+      - name: Push Frontend Image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-frontend:latest
+
+      - name: Push Database Image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-database:latest
+```
+
+- `on`: Definiert die Auslöser für den Workflow.
+- `jobs`: Definiert die Jobs für den Workflow.
+- `uses`: Verwendet die Docker-Login-Action, um sich bei Docker Hub anzumelden.
+- `with`: Definiert die Benutzername und das Token für Docker Hub.
+- `docker/setup-buildx-action@v3`: Setzt Docker Buildx für den Build-Prozess.
+- `docker-compose build`: Baut die Docker-Images mit Docker Compose.
+- `docker tag`: Taggt die Docker-Images mit dem Docker Hub Benutzernamen.
+- `docker push`: Pushed die Docker-Images auf Docker Hub.
+
+- `secret.DOCKERHUB_USERNAME` und `secret.DOCKERHUB_TOKEN`: Definiert die Docker Hub Zugangsdaten als Secrets im GitHub Repository.
 
 ## Schritte zum lokalen Testen
 1. **Vorausssetzungen**:
