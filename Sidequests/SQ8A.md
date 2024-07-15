@@ -2,6 +2,25 @@ _Christopher Knuchel, Jason Termine_
 
 # Inhaltsverzeichnis
 
+1. [Dokumentation für Docker-Setup und GitHub Actions Workflow](#dokumentation-für-docker-setup-und-github-actions-workflow)    
+2. [Dockerfile für das Frontend](#dockerfile-für-das-frontend)
+    1. [Build-Phase](#build-phase)
+    2. [Produktionsphase](#produktions-phase)
+3. [Dockerfile für das Backend](#dockerfile-für-das-backend)
+    1. [Build-Stage](#build-phase-1)
+    2. [Produktions-Stage](#produktions-phase-1)
+4. [Dockerfile für MYSQL](#dockerfile-für-mysql)
+5. [Docker Compose für das Build des Frontend, Backends und der Datenbank](#docker-compose-für-das-build-des-frontend-backends-und-der-datenbank)
+6. [Docker Compose welches die Images eigenen Images auf Docker Hub pullt](#docker-compose-welches-die-images-eigenen-images-auf-docker-hub-pullt)
+7. [GitHub Actions Workflow](#github-actions-workflow)
+8. [Schritte zum lokalen Testen](#schritte-zum-lokalen-testen)
+    1. [Vorausssetzungen](#vorausssetzungen)
+    2. [Compose-Datei ausführen](#compose-datei-ausführen)
+9. [Hinweis](#hinweis)
+    1. [Github Secrets](#github-secrets)
+    2. [Pfadangaben](#pfadangaben)
+    3. [Docker Compose Push](#docker-compose-push)
+
 ## Dokumentation für Docker-Setup und GitHub Actions Workflow
 
 Diese Dokumentation beschreibt die Schritte zur Erstellung und Verwaltung von Docker-Containern für das Frontend und Backend sowie die Automatisierung des Build- und Push-Prozesses mit GitHub Actions.
@@ -38,7 +57,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-2. **Build-Phase**:
+2. ##### **Build-Phase**:
 - `FROM node:latest AS build`: Verwendet das offizielle Node-Image als Basisimage für den Build-Prozess.
 - `WORKDIR /app`: Setzt das Arbeitsverzeichnis auf /app.
 - `COPY package*.json ./`: Kopiert package.json und package-lock.json in das Arbeitsverzeichnis.
@@ -46,7 +65,7 @@ CMD ["nginx", "-g", "daemon off;"]
 - `COPY . .`: Kopiert alle Dateien in das Arbeitsverzeichnis.
 - `RUN npm run build`: Baut die Anwendung.
 
-3. **Produktionsphase**:
+3. ##### **Produktions-Phase**:
 - `FROM nginx:alpine`: Verwendet das offizielle Nginx-Image als Basisimage für die Produktionsphase.
 - `COPY --from=build /app/dist /usr/share/nginx/html`: Kopiert die gebauten Dateien aus dem Build-Image in das Nginx-Image.
 - `EXPOSE 80`: Öffnet den Port 80.
@@ -85,10 +104,10 @@ CMD ["java", "-jar", "todo.jar"]
 
 In diesem Dockerfile werden zwei Stages verwendet:
 
-1. **Build-Stage**: 
+1. ##### **Build-Phase**: 
     - Verwendet das Maven-Image, um das JAR-Archiv zu erstellen.
 
-2. **Produktions-Stage**: 
+2. ##### **Produktions-Phase**: 
     - Verwendet das OpenJDK-Image, um das endgültige Produktions-Image zu erstellen. Kopiert das JAR-Archiv aus der Build-Stage in das Produktions-Image und definiert den Befehl zum Ausführen des JAR-Archivs.
 
 ## Dockerfile für MYSQL
@@ -265,11 +284,11 @@ jobs:
 - `secret.DOCKERHUB_USERNAME` und `secret.DOCKERHUB_TOKEN`: Definiert die Docker Hub Zugangsdaten als Secrets im GitHub Repository.
 
 ## Schritte zum lokalen Testen
-1. **Vorausssetzungen**:
+1. ##### **Vorausssetzungen**:
     - Docker und Docker Compose müssen auf dem lokalen Rechner installiert sein.
 
-2. **Compose-Datei ausführen**:
-    - Um die Docker compose Datei auszuführen, navigiere zum `SQ8` Verzeichnis, in dem die `compose.yml` Datei liegt und führe den folgenden Befehl aus:
+2. ##### **Compose-Datei ausführen**:
+    - Um die Docker compose Datei auszuführen, navigiere zum `Sidequests/SQ8/` Verzeichnis, in dem die `compose.yml` Datei liegt und führe den folgenden Befehl aus:
 ```bash
 docker compose up -d
 ```
@@ -278,10 +297,10 @@ Dieser Befehl startet die Frontend-Anwendung auf Port 80 und die Backend-Anwendu
 
 # Hinweis
 
-- **Github Secrets**: 
+- ##### **Github Secrets**: 
     - Stelle sicher, dass die Docker Hub Zugangsdaten (DOCKER_USERNAME und DOCKER_TOKEN) als Secrets im GitHub Repository konfiguriert sind.
-- **Pfadangaben**: 
+- ##### **Pfadangaben**: 
     - Überprüfe, ob die Pfade in der GitHub Actions Workflow Datei korrekt sind und auf die richtigen Dateien verweisen.
 
-- **Docker Compose Push**: 
+- ##### **Docker Compose Push**: 
     - Der `compose push` Befehl verwendet die `image ` Tags, die in der `compose.yml` Datei angegeben sind. Stelle sicher, dass diese Tags korrekt konfiguriert sind.
